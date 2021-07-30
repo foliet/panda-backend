@@ -23,5 +23,7 @@ from api_test import views
 urlpatterns = [
     path('admin/', admin.site.urls),
 # 2021.7.23
-    path('test/', views.Hello.as_view())
+    path('test/', views.Hello.as_view()),
+    # 2021.7.30
+    path('videos/', views.Video.as_view())
 ]
