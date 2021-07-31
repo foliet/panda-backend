@@ -1,7 +1,7 @@
 create database panda;
 use panda;
 CREATE TABLE IF NOT EXISTS `video`(
-   `video_id` INT UNSIGNED AUTO_INCREMENT,
+   `id` INT UNSIGNED AUTO_INCREMENT,
    `video_title` VARCHAR(100) NOT NULL,
    `video_cover` VARCHAR(200) NOT NULL,
    `video_url` VARCHAR(200) NOT NULL,

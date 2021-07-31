@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path
 # 2021.7.23
 from api_test import views
 
@@ -25,5 +25,8 @@ urlpatterns = [
 # 2021.7.23
     path('test/', views.Hello.as_view()),
     # 2021.7.30
-    path('videos/', views.Video.as_view())
+    path('videos/', views.VideoList.as_view()),
+    #2021.7.31
+    # re_path('video/', views.VideoDetail.as_view())
+    re_path(r'^video1/(?P<name>\w+)/', views.VideoDetail2.as_view())
 ]
