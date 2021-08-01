@@ -17,16 +17,23 @@ from django.contrib import admin
 from django.urls import path, re_path
 # 2021.7.23
 from api_test import views
-
-
+from account_management import views as views2
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-# 2021.7.23
+    # 2021.7.23
     path('test/', views.Hello.as_view()),
     # 2021.7.30
     path('videos/', views.VideoList.as_view()),
-    #2021.7.31
-    # re_path('video/', views.VideoDetail.as_view())
-    re_path(r'^video1/(?P<name>\w+)/', views.VideoDetail2.as_view())
+    # 2021.7.31
+    re_path('video/', views.VideoDetail.as_view()),
+    re_path(r'^video1/(?P<name>\w+)/', views.VideoDetail2.as_view()),
+
+    path(r'register/', views2.AccountDetail.as_view()),
+
+    path('login/', views2.login, name='login'),
+    path('index/', views2.index, name='index'),
+    path('logout/', views2.logout, name='logout'),
+
+    path('test1/', views2.Test.as_view())
 ]

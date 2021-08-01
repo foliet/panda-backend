@@ -62,9 +62,12 @@ class VideoDetail(generics.ListAPIView):
         if self.request.method == 'GET':
             queryset = VideoModel.objects.all()
             state_name = self.request.GET.get('q', None)
+            print(state_name)
             if state_name is not None:
                 queryset = queryset.filter(video_title=state_name)
                 return queryset
+            else:
+                return JsonResponse('用户未登录', safe=False)
 
 
 class VideoDetail2(generics.ListAPIView):
