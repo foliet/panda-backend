@@ -6,6 +6,8 @@ from django.views import View
 from rest_framework import generics, status
 from rest_framework.response import Response
 from django.contrib.auth.models import User
+from rest_framework.utils import json
+
 from account_management.serializers import AccountSerializer, AccountFrom
 from django.contrib.auth.hashers import make_password, check_password
 
@@ -62,6 +64,9 @@ def logout(request):
 
 class Test(View):
     def post(self, request):
-        uu = self.request.POST.get('username')
-        print(uu)
-        return HttpResponse(uu, status=400)
+        data = json.loads(request.body.decode())
+        print(data)
+        # uu = self.request.POST.get('username')
+        # print(self.request.POST)
+        # return HttpResponse(uu, status=400)
+        return HttpResponse(data['username'], status=400)
