@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # 2021.7.23
-    'api_test'
+    'course'
 
 ]
 
@@ -87,10 +87,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',  # 默认
         'NAME': 'panda',  # 连接的数据库
-        'HOST': '127.0.0.1',  # mysql的ip地址
+        'HOST': '1.117.107.95',  # mysql的ip地址
         'PORT': 3306,  # mysql的端口
         'USER': 'root',  # mysql的用户名
-        'PASSWORD': 'xxxx'  # mysql的密码
+        'PASSWORD': 'Drx123456'  # mysql的密码
     }
 }
 

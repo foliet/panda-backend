@@ -8,11 +8,11 @@ from rest_framework.parsers import JSONParser
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 
-from api_test import models
-from api_test.models import VideoModel
+from course import models
+from course.models import VideoModel
 
 # Create your views here.
-from api_test.serializers import VideoSerializer
+from course.serializers import VideoSerializer
 
 
 class Hello(View):

@@ -10,3 +10,10 @@ CREATE TABLE IF NOT EXISTS `video`(
    `submission_date` DATETIME_INTERVAL_CODE ,
    PRIMARY KEY ( `video_id` )
 );
+CREATE TABLE IF NOT EXISTS `course_sentence`(
+   `id` INT UNSIGNED AUTO_INCREMENT,
+   `sentence_content` VARCHAR(100) NOT NULL,
+   `sentence_English` VARCHAR(200) NOT NULL,
+   `sentence_pronunciation` VARCHAR(200) NOT NULL,
+    primary key (`id`)
+);

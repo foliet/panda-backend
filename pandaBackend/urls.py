@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, re_path
 # 2021.7.23
-from api_test import views
+from course import views
 from account_management import views as views2
 
 urlpatterns = [
