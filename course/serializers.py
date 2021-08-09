@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from api_test.models import VideoModel
+from course.models import VideoModel
 
 
 class VideoSerializer(serializers.ModelSerializer):
