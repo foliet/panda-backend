@@ -29,11 +29,11 @@ urlpatterns = [
     re_path('video/', views.VideoDetail.as_view()),
     re_path(r'^video1/(?P<name>\w+)/', views.VideoDetail2.as_view()),
 
-    path(r'register/', views2.AccountDetail.as_view()),
+    path(r'register/', views2.register),
 
     path('login/', views2.login, name='login'),
     path('index/', views2.index, name='index'),
     path('logout/', views2.logout, name='logout'),
-
-    path('test1/', views2.Test.as_view())
+    #
+    # path('test1/', views2.Test.as_view())
 ]

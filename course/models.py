@@ -23,7 +23,6 @@ class VideoModel(models.Model):
     video_cover = models.CharField(max_length=200)
     video_url = models.CharField(max_length=200)
     video_author = models.CharField(max_length=40)
-    video_description = models.CharField(max_length=400)
     submission_date = models.DateTimeField(auto_now_add=True)
     user = models.ManyToManyField(settings.AUTH_USER_MODEL)
 
@@ -33,19 +32,21 @@ class Sentence(models.Model):
     sentence_content = models.CharField(max_length=100)
     sentence_English = models.CharField(max_length=100)
     sentence_pronunciation = models.CharField(max_length=200)
+    sentence_pinyin = models.CharField(max_length=300)
     word = models.ManyToManyField('Word')
     user = models.ManyToManyField(settings.AUTH_USER_MODEL)
 
 
 class Grammar(models.Model):
     grammar_content = models.CharField(max_length=100)
-    grammar_example1 = models.CharField(max_length=100)
-    grammar_example2 = models.CharField(max_length=100)
+    grammar_example1 = models.CharField(max_length=100, default='')
+    grammar_example2 = models.CharField(max_length=100, default='')
     sentence = models.ForeignKey('Sentence', default=None, on_delete=models.CASCADE)
 
 
 class Word(models.Model):
-    word_spelling = models.CharField(max_length=10)
+    word_content = models.CharField(max_length=10)
+    word_spelling = models.CharField(max_length=30)
     word_meaning = models.CharField(max_length=200)
     word_spell_url = models.CharField(max_length=200)
     user = models.ManyToManyField(settings.AUTH_USER_MODEL)

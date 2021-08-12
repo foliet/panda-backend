@@ -1,58 +1,83 @@
-from django.http import JsonResponse, HttpResponse
-from django.shortcuts import render
-
-# 注册模块
-from django.views import View
-from rest_framework import generics, status
-from rest_framework.response import Response
-from django.contrib.auth.models import User
+# coding=utf-8
+import re
+from django.db import models
+from django.http import HttpResponse, JsonResponse
+from django import forms
 from rest_framework.utils import json
 
-from account_management.serializers import AccountSerializer, AccountFrom
-from django.contrib.auth.hashers import make_password, check_password
+from account_management.models import User
+from account_management.forms import UserForm
 
 
-class AccountDetail(generics.CreateAPIView):
-    serializer_class = AccountSerializer
-    queryset = User.objects.all()
+# Create your views here.
 
-    def create(self, request, *args, **kwargs):
-        serializer = AccountSerializer(data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class LoginForm(forms.Form):
+    email = forms.CharField(label='邮箱')
+    password = forms.CharField(label='密码', widget=forms.PasswordInput())
+
+    def clean_email(self):
+        print('clean')
+        value = self.cleaned_data['email']
+        try:
+            result_email = User.objects.get(email=value)
+        except User.DoesNotExist:
+            raise forms.ValidationError(u"该邮箱未注册", code='email invalid')
+        return value
+
+    def clean_password(self):
+        value = self.cleaned_data['password']
+        if re.match('^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,20}$', value):
+            return value
+        else:
+            raise forms.ValidationError(u"密码必须由6-20个字母和数字组成", code='password invalid')
+
+
+def register(request):
+    if request.method == 'POST':
+
+        print(request.POST)
+        userform = UserForm(request.POST)
+        if userform.is_valid():
+            print('print')
+            print(userform.cleaned_data)
+            print('print')
+            username = userform.cleaned_data['username']
+            password = userform.cleaned_data['password']
+            email = userform.cleaned_data['email']
+            repeat_password = userform.cleaned_data['repeat_password']
+            user = User.objects.create(username=username, password=password, email=email, learner_level='0', points=0,
+                                       country='', age=0, portrait_url='http://1.117.107.95/img/portrait.f98bd381.svg')
+            user.save()
+            return HttpResponse('register success!!!')
+        else:
+            return HttpResponse(userform.errors.as_json())
 
 
 def login(request):
-    if request.method == 'GET':
-        username = request.GET.get('username')
-        print(username)
-        password = request.GET.get('password')
-        print(password)
-        user = User.objects.get(username=username)
-        print(user)
-        password1 = User.objects.get(username=username).password
-        print(password1)
-        pwd_bool = check_password(password, password1)
-        print(pwd_bool)
+    if request.method == 'POST':
+        print(request.POST)
+        loginform = LoginForm(request.POST)
+        if loginform.is_valid():
+            email = loginform.cleaned_data['email']
+            password = loginform.cleaned_data['password']
 
-        if user:
-            if pwd_bool:
-                request.session['username'] = username
+            user = User.objects.filter(email=email, password=password)
+
+            if user:
+                request.session['email'] = email
                 request.session['is_login'] = True
-                return JsonResponse('登录成功', safe=False)
+                return HttpResponse('登陆成功')
             else:
-                return JsonResponse('密码错误', safe=False)
+                return HttpResponse('用户名或密码错误,请重新登录')
         else:
-            return JsonResponse('用户名不存在', safe=False)
+            return HttpResponse(loginform.errors.as_json())
 
 
-# 通过cookie判断用户是否已登录
 def index(request):
     if request.method == 'GET':
         # 提取浏览器中的cookie，如果不为空，表示已经登录
-        u = request.session.get('username', None)
+        u = request.session.get('email', None)
         is_login = request.session.get('is_login', None)
         return JsonResponse('用户{0}的登录状态是{1}'.format(u, is_login), safe=False)
 
@@ -60,13 +85,3 @@ def index(request):
 def logout(request):
     request.session.clear()
     return JsonResponse('登出成功', safe=False)
-
-
-class Test(View):
-    def post(self, request):
-        data = json.loads(request.body.decode())
-        print(data)
-        # uu = self.request.POST.get('username')
-        # print(self.request.POST)
-        # return HttpResponse(uu, status=400)
-        return HttpResponse(data['username'], status=400)

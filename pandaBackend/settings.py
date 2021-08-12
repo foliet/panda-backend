@@ -39,7 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # 2021.7.23
-    'course'
+    'course',
+    'account_management'
+
 
 ]
 
