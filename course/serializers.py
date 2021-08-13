@@ -1,9 +1,36 @@
 from rest_framework import serializers
 
 from course.models import VideoModel
+from course.models import Sentence
+from course.models import Grammar
+from course.models import Word
 
 
 class VideoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = VideoModel
+        exclude = ["id"]
+
+
+class SentenceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Sentence
+        exclude = ["user"]
+
+
+class GrammarSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Grammar
+        exclude = ["id"]
+
+
+class WordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Word
+        exclude = ["id"]
+
+
+class StarSerializer(serializers.ModelSerializer):
     class Meta:
         model = VideoModel
         exclude = ["id"]

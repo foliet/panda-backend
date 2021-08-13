@@ -27,13 +27,16 @@ urlpatterns = [
     path('videos/', views.VideoList.as_view()),
     # 2021.7.31
     re_path('video/', views.VideoDetail.as_view()),
-    re_path(r'^video1/(?P<name>\w+)/', views.VideoDetail2.as_view()),
-
+    path(r'video1/<name>/', views.VideoDetail2.as_view()),
     path(r'register/', views2.register),
 
     path('login/', views2.login, name='login'),
     path('index/', views2.index, name='index'),
     path('logout/', views2.logout, name='logout'),
+    path('course_sentence/',views.SentenceList.as_view()),
+    path('course_grammar/',views.GrammarList.as_view()),
+    path('course_word/',views.WordList.as_view()),
+    path('user_star/',views.get_user_star),
     #
     # path('test1/', views2.Test.as_view())
 ]

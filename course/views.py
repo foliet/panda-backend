@@ -9,10 +9,12 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 
 from course import models
-from course.models import VideoModel
+from course.models import VideoModel, Sentence, Grammar, Word
 
 # Create your views here.
-from course.serializers import VideoSerializer
+from course.serializers import VideoSerializer, GrammarSerializer, WordSerializer
+from course.serializers import SentenceSerializer
+from account_management.models import User
 
 
 class Hello(View):
@@ -74,21 +76,130 @@ class VideoDetail2(generics.ListAPIView):
     serializer_class = VideoSerializer
     queryset = VideoModel.objects.all()
     lookup_field = 'name'
+
     # 得到一个数据集
 
     # 得到一个数据集
     def get_queryset(self):
+        print(self.kwargs['name'])
         return VideoModel.objects.filter(video_title=self.kwargs['name'])
 
     # get方法返回一个student
-    def get(self, request, *args, **kwargs):
-        # 获取url中的参数
-        # http://127.0.0.1:8000/api/students/aaa/?test=123
-        # 取test的值
-        print(self.request.GET.get('test', None))
+    # def get(self, request, *args, **kwargs):
+    #     # 获取url中的参数
+    #     # http://127.0.0.1:8000/api/students/aaa/?test=123
+    #     # 取test的值
+    #     print(self.request.GET.get('test', None))
+    #
+    #     queryset = self.get_queryset()
+    #     serializer = VideoSerializer(queryset, many=True)
+    #     return Response({
+    #         'data': serializer.data,
+    #     })
 
-        queryset = self.get_queryset()
-        serializer = VideoSerializer(queryset, many=True)
-        return Response({
-            'data': serializer.data,
-        })
+
+class SentenceList(generics.ListAPIView):
+    queryset = Sentence.objects.all()
+    serializer_class = SentenceSerializer
+
+    def get_queryset(self):
+        print('printprint')
+        if self.request.method == 'GET':
+            video_title = self.request.GET.get('video_title', None)
+            print(video_title)
+            q_set = VideoModel.objects.filter(video_title=video_title)
+            video_id = q_set[0].id
+            print(video_id)
+            return Sentence.objects.filter(video_id=video_id)
+
+
+class GrammarList(generics.ListAPIView):
+    queryset = Grammar.objects.all()
+    serializer_class = GrammarSerializer
+
+    def get_queryset(self):
+        if self.request.method == 'GET':
+            video_title = self.request.GET.get('video_title', None)
+            print(video_title)
+            q_set = VideoModel.objects.filter(video_title=video_title)
+            video_id = q_set[0].id
+            q_set = Sentence.objects.filter(video_id=video_id)
+            grammarlist = []
+            for item in q_set:
+                temp = Grammar.objects.filter(sentence_id=item.id)
+                for item1 in temp:
+                    grammarlist.append({
+                        "id": item1.id,
+                        "grammar_content": item1.grammar_content,
+                        "grammar_example1": item1.grammar_example1,
+                        "grammar_example2": item1.grammar_example2,
+                        "sentence": item1.sentence
+                    })
+            print(grammarlist)
+            return grammarlist
+
+
+class WordList(View):
+    queryset = Word.objects.all()
+
+    def get(self, request):
+        if request.method == 'GET':
+            video_title = request.GET.get('video_title', None)
+            print(video_title)
+            q_set = VideoModel.objects.filter(video_title=video_title)
+            video_id = q_set[0].id
+            q_set = Sentence.objects.filter(video_id=video_id)
+            grammarlist = []
+            for item in q_set:
+                temp = Word.objects.filter(sentence__id=item.id)
+                print(temp)
+                for item1 in temp:
+
+                    grammarlist.append({
+                        "id": item1.id,
+                        "word_content": item1.word_content,
+                        "word_spelling": item1.word_spelling,
+                        "word_meaning": item1.word_meaning,
+                        "word_spell_url": item1.word_spell_url,
+                        "sentence_id": item.id,
+                    })
+            print(grammarlist)
+            return JsonResponse(data=grammarlist, json_dumps_params={'ensure_ascii': False}, safe=False)
+
+
+    # def get_queryset(self):
+    #     print('printprint')
+    #     if self.request.method == 'GET':
+    #         video_title = self.request.GET.get('video_title', None)
+    #         print(video_title)
+    #         q_set = VideoModel.objects.filter(video_title=video_title)
+    #         video_id = q_set[0].id
+    #         print(video_id)
+    #         wordlist = []
+    #         s_set = Sentence.objects.filter(video_id=video_id)
+    #         for item in s_set:
+    #             temp = Word.objects.filter(sentence__id=item.id)
+    #             for item1 in temp:
+    #                 wordlist.append({
+    #                     "id": item1.id,
+    #                     "word_content": item1.word_content,
+    #                     "word_spelling": item1.word_spelling,
+    #                     "word_meaning": item1.word_meaning,
+    #                     "word_spell_url": item1.word_spell_url,
+    #                     "sentence_id": item.id,
+    #
+    #                 })
+    #         print('hello')
+    #         print(wordlist)
+    #         print('ok')
+    #         print('ok')
+    #         return HttpResponse('0')
+
+
+def get_user_star(request):
+    if request.method == 'GET':
+        user = request.GET.get('email', None)
+        # video_id = video[0]['id']
+        print(user)
+        return HttpResponse('ok')
+    return HttpResponse('0')
