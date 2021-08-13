@@ -1,9 +1,9 @@
-from django.conf import settings
+from account_management.models import User
+
 from django.db import models
 
 
 # Create your models here.
-
 
 
 class HelloModel():
@@ -24,7 +24,7 @@ class VideoModel(models.Model):
     video_url = models.CharField(max_length=200)
     video_author = models.CharField(max_length=40)
     submission_date = models.DateTimeField(auto_now_add=True)
-    user = models.ManyToManyField(settings.AUTH_USER_MODEL)
+    user = models.ManyToManyField(User)
 
 
 class Sentence(models.Model):
@@ -34,7 +34,7 @@ class Sentence(models.Model):
     sentence_pronunciation = models.CharField(max_length=200)
     sentence_pinyin = models.CharField(max_length=300)
     word = models.ManyToManyField('Word')
-    user = models.ManyToManyField(settings.AUTH_USER_MODEL)
+    user = models.ManyToManyField(User)
 
 
 class Grammar(models.Model):
@@ -49,8 +49,4 @@ class Word(models.Model):
     word_spelling = models.CharField(max_length=30)
     word_meaning = models.CharField(max_length=200)
     word_spell_url = models.CharField(max_length=200)
-    user = models.ManyToManyField(settings.AUTH_USER_MODEL)
-
-
-
-
+    user = models.ManyToManyField(User)
