@@ -36,7 +36,9 @@ urlpatterns = [
     path('course_sentence/',views.SentenceList.as_view()),
     path('course_grammar/',views.GrammarList.as_view()),
     path('course_word/',views.WordList.as_view()),
-    path('user_star/',views.get_user_star),
+    path('user_star/',views.StarList.as_view()),
+    path('user_sentence_note/',views.NoteSentenceList.as_view()),
+    path('user_word_note/',views.NoteWordList.as_view()),
     #
     # path('test1/', views2.Test.as_view())
 ]

@@ -13,7 +13,7 @@ from course.models import VideoModel, Sentence, Grammar, Word
 
 # Create your views here.
 from course.serializers import VideoSerializer, GrammarSerializer, WordSerializer
-from course.serializers import SentenceSerializer
+from course.serializers import SentenceSerializer, StarSerializer
 from account_management.models import User
 
 
@@ -38,7 +38,6 @@ class VideoList(View):
                 'video_cover': str(video.video_cover),
                 'video_url': video.video_url,
                 'video_author': video.video_author,
-                'video_description': video.video_description,
                 'submission_date': video.submission_date
             })
 
@@ -113,13 +112,38 @@ class SentenceList(generics.ListAPIView):
             return Sentence.objects.filter(video_id=video_id)
 
 
-class GrammarList(generics.ListAPIView):
+# class GrammarList(generics.ListAPIView):
+#     queryset = Grammar.objects.all()
+#     serializer_class = GrammarSerializer
+#
+#     def get_queryset(self):
+#         if self.request.method == 'GET':
+#             video_title = self.request.GET.get('video_title', None)
+#             print(video_title)
+#             q_set = VideoModel.objects.filter(video_title=video_title)
+#             video_id = q_set[0].id
+#             q_set = Sentence.objects.filter(video_id=video_id)
+#             grammarlist = []
+#             for item in q_set:
+#                 temp = Grammar.objects.filter(sentence_id=item.id)
+#                 for item1 in temp:
+#                     grammarlist.append({
+#                         "id": item1.id,
+#                         "grammar_content": item1.grammar_content,
+#                         "grammar_example1": item1.grammar_example1,
+#                         "grammar_example2": item1.grammar_example2,
+#                         "sentence": item1.sentence
+#                     })
+#             print(grammarlist)
+#             return grammarlist
+
+class GrammarList(View):
     queryset = Grammar.objects.all()
     serializer_class = GrammarSerializer
 
-    def get_queryset(self):
-        if self.request.method == 'GET':
-            video_title = self.request.GET.get('video_title', None)
+    def get(self, request):
+        if request.method == 'GET':
+            video_title = request.GET.get('video_title', None)
             print(video_title)
             q_set = VideoModel.objects.filter(video_title=video_title)
             video_id = q_set[0].id
@@ -133,10 +157,10 @@ class GrammarList(generics.ListAPIView):
                         "grammar_content": item1.grammar_content,
                         "grammar_example1": item1.grammar_example1,
                         "grammar_example2": item1.grammar_example2,
-                        "sentence": item1.sentence
+                        "sentence": item.sentence_content
                     })
             print(grammarlist)
-            return grammarlist
+            return JsonResponse(data=grammarlist, json_dumps_params={'ensure_ascii': False}, safe=False)
 
 
 class WordList(View):
@@ -149,13 +173,12 @@ class WordList(View):
             q_set = VideoModel.objects.filter(video_title=video_title)
             video_id = q_set[0].id
             q_set = Sentence.objects.filter(video_id=video_id)
-            grammarlist = []
+            wordlist = []
             for item in q_set:
                 temp = Word.objects.filter(sentence__id=item.id)
                 print(temp)
                 for item1 in temp:
-
-                    grammarlist.append({
+                    wordlist.append({
                         "id": item1.id,
                         "word_content": item1.word_content,
                         "word_spelling": item1.word_spelling,
@@ -163,43 +186,121 @@ class WordList(View):
                         "word_spell_url": item1.word_spell_url,
                         "sentence_id": item.id,
                     })
-            print(grammarlist)
-            return JsonResponse(data=grammarlist, json_dumps_params={'ensure_ascii': False}, safe=False)
+            print(wordlist)
+            return JsonResponse(data=wordlist, json_dumps_params={'ensure_ascii': False}, safe=False)
 
 
-    # def get_queryset(self):
-    #     print('printprint')
-    #     if self.request.method == 'GET':
-    #         video_title = self.request.GET.get('video_title', None)
-    #         print(video_title)
-    #         q_set = VideoModel.objects.filter(video_title=video_title)
-    #         video_id = q_set[0].id
-    #         print(video_id)
-    #         wordlist = []
-    #         s_set = Sentence.objects.filter(video_id=video_id)
-    #         for item in s_set:
-    #             temp = Word.objects.filter(sentence__id=item.id)
-    #             for item1 in temp:
-    #                 wordlist.append({
-    #                     "id": item1.id,
-    #                     "word_content": item1.word_content,
-    #                     "word_spelling": item1.word_spelling,
-    #                     "word_meaning": item1.word_meaning,
-    #                     "word_spell_url": item1.word_spell_url,
-    #                     "sentence_id": item.id,
-    #
-    #                 })
-    #         print('hello')
-    #         print(wordlist)
-    #         print('ok')
-    #         print('ok')
-    #         return HttpResponse('0')
+# def get_user_star(request):
+#     if request.method == 'GET':
+#         user = request.GET.get('email', None)
+#         # video_id = video[0]['id']
+#         print(user)
+#         return HttpResponse('ok')
+#     return HttpResponse('0')
+
+class StarList(View):
+    queryset = VideoModel.objects.all()
+
+    def get(self, request):
+        if request.method == 'GET':
+            u = request.session.get('email', None)
+            is_login = request.session.get('is_login', None)
+            if is_login:
+                q_set = VideoModel.objects.filter(user__email=u)
+                starlist=[]
+                for video in q_set:
+                    starlist.append({
+                        'video_id': video.id,
+                        'video_title': video.video_title,
+                        'video_cover': str(video.video_cover),
+                        'video_url': video.video_url,
+                        'video_author': video.video_author,
+                        'submission_date': video.submission_date,
+                    })
+                return JsonResponse(data=starlist, json_dumps_params={'ensure_ascii': False}, safe=False)
+            else:
+                return JsonResponse('用户未登录', safe=False)
+
+    def post(self, request):
+        if request.method == 'POST':
+            video_title = request.GET.get('video_title', None)
+            u = request.session.get('email', None)
+            is_login = request.session.get('is_login', None)
+            if is_login:
+                user = User.objects.get(email=u)
+                q_set = VideoModel.objects.filter(video_title=video_title)
+                for item in q_set:
+                    item.user.add(user)
+                return JsonResponse('收藏成功',safe=False)
+            else:
+                return JsonResponse('用户未登录',safe=False)
 
 
-def get_user_star(request):
-    if request.method == 'GET':
-        user = request.GET.get('email', None)
-        # video_id = video[0]['id']
-        print(user)
-        return HttpResponse('ok')
-    return HttpResponse('0')
+class NoteSentenceList(View):
+    def get(self,request):
+        if request.method == 'GET':
+            u = request.session.get('email', None)
+            is_login = request.session.get('is_login', None)
+            if is_login:
+                q_set = Sentence.objects.filter(user__email=u)
+                notelist = []
+                for sentence in q_set:
+                    notelist.append({
+                        'video_id': sentence.video_id,
+                        'sentence_id':sentence.id,
+                        'sentence_content': sentence.sentence_content,
+                        'sentence_English': sentence.sentence_English,
+                        'sentence_pronunciation': sentence.sentence_pronunciation,
+                        'sentence_pinyin':sentence.sentence_pinyin,
+
+                    })
+                return JsonResponse(data=notelist, json_dumps_params={'ensure_ascii': False}, safe=False)
+            else:
+                return JsonResponse('用户未登录', safe=False)
+
+    def post(self,request):
+        if request.method == 'POST':
+            sentence_id = request.GET.get('sentence_id', None)
+            u = request.session.get('email', None)
+            is_login = request.session.get('is_login', None)
+            if is_login:
+                sentence = Sentence.objects.get(id=sentence_id)
+                user = User.objects.get(email=u)
+                sentence.user.add(user)
+                return JsonResponse('添加note成功',safe=False)
+            else:
+                return JsonResponse('用户未登录',safe=False)
+
+
+class NoteWordList(View):
+    def get(self,request):
+        if request.method == 'GET':
+            u = request.session.get('email', None)
+            is_login = request.session.get('is_login', None)
+            if is_login:
+                q_set = Word.objects.filter(user__email=u)
+                notelist = []
+                for item1 in q_set:
+                    notelist.append({
+                        "id": item1.id,
+                        "word_content": item1.word_content,
+                        "word_spelling": item1.word_spelling,
+                        "word_meaning": item1.word_meaning,
+                        "word_spell_url": item1.word_spell_url
+                    })
+                return JsonResponse(data=notelist, json_dumps_params={'ensure_ascii': False}, safe=False)
+            else:
+                return JsonResponse('用户未登录', safe=False)
+
+    def post(self,request):
+        if request.method == 'POST':
+            word_id = request.GET.get('word_id', None)
+            u = request.session.get('email', None)
+            is_login = request.session.get('is_login', None)
+            if is_login:
+                word = Word.objects.get(id=word_id)
+                user = User.objects.get(email=u)
+                word.user.add(user)
+                return JsonResponse('添加note成功',safe=False)
+            else:
+                return JsonResponse('用户未登录',safe=False)
