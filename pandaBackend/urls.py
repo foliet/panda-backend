@@ -39,6 +39,7 @@ urlpatterns = [
     path('user_star/',views.StarList.as_view()),
     path('user_sentence_note/',views.NoteSentenceList.as_view()),
     path('user_word_note/',views.NoteWordList.as_view()),
+    path('user_info/',views2.UserList.as_view())
     #
     # path('test1/', views2.Test.as_view())
 ]
