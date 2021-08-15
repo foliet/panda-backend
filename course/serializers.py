@@ -4,6 +4,7 @@ from course.models import VideoModel
 from course.models import Sentence
 from course.models import Grammar
 from course.models import Word
+from account_management.models import User
 
 
 class VideoSerializer(serializers.ModelSerializer):
@@ -33,4 +34,10 @@ class WordSerializer(serializers.ModelSerializer):
 class StarSerializer(serializers.ModelSerializer):
     class Meta:
         model = VideoModel
+        exclude = ["id"]
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
         exclude = ["id"]

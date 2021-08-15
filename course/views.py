@@ -3,7 +3,7 @@ import json
 from django.http import JsonResponse, HttpResponse
 from django.views import View
 # import model
-from rest_framework import status, generics
+from rest_framework import  generics
 from rest_framework.parsers import JSONParser
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
@@ -304,3 +304,4 @@ class NoteWordList(View):
                 return JsonResponse('添加note成功',safe=False)
             else:
                 return JsonResponse('用户未登录',safe=False)
+

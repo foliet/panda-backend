@@ -3,13 +3,15 @@ import re
 from django.db import models
 from django.http import HttpResponse, JsonResponse
 from django import forms
+from django.views import View
+from rest_framework import generics
 from rest_framework.utils import json
 
 from account_management.models import User
 from account_management.forms import UserForm
 
-
 # Create your views here.
+from course.serializers import UserSerializer
 
 
 class LoginForm(forms.Form):
@@ -85,3 +87,19 @@ def index(request):
 def logout(request):
     request.session.clear()
     return JsonResponse('登出成功', safe=False)
+
+
+class UserList(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+    def get_queryset(self):
+        if self.request.method == 'GET':
+            # 提取浏览器中的cookie，如果不为空，表示已经登录
+            u = self.request.session.get('email', None)
+            is_login = self.request.session.get('is_login', None)
+            if is_login is not None:
+                userlist = User.objects.filter(email=u)
+                return userlist
+            else:
+                return []

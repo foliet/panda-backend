@@ -23,7 +23,7 @@ class UserForm(forms.Form):
             result_email = User.objects.get(email=value)
         except User.DoesNotExist:
             return value
-        raise forms.ValidationError(u"手机号码非法", code='email invalid')
+        raise forms.ValidationError(u"邮箱已注册", code='email invalid')
 
     def clean_password(self):
         value = self.cleaned_data['password']
