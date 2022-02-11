@@ -27,6 +27,8 @@ urlpatterns = [
     path('videos/', views.VideoList.as_view()),
     # 2021.7.31
     re_path('video/', views.VideoDetail.as_view()),
+    path('videos_basic_info/',views.VideoBasicInfoList.as_view()),
+    path('videos_level/',views.VideoLevelList.as_view()),
     path(r'video1/<name>/', views.VideoDetail2.as_view()),
     path(r'register/', views2.register),
 

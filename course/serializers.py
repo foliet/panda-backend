@@ -10,7 +10,7 @@ from account_management.models import User
 class VideoSerializer(serializers.ModelSerializer):
     class Meta:
         model = VideoModel
-        exclude = ["id"]
+        exclude = ["user"]
 
 
 class SentenceSerializer(serializers.ModelSerializer):
