@@ -20,6 +20,7 @@ class HelloModel():
 
 class VideoModel(models.Model):
     video_title = models.CharField(max_length=100)
+    video_level = models.CharField(max_length=20, default='')
     video_cover = models.CharField(max_length=200)
     video_url = models.CharField(max_length=200)
     video_author = models.CharField(max_length=40)
@@ -50,3 +51,12 @@ class Word(models.Model):
     word_meaning = models.CharField(max_length=200)
     word_spell_url = models.CharField(max_length=200)
     user = models.ManyToManyField(User)
+
+
+class Category(models.Model):
+    cover = models.CharField(max_length=200)
+    title = models.CharField(max_length=15)
+    description = models.CharField(max_length=200)
+    author = models.CharField(max_length=15)
+    total = models.IntegerField()
+
