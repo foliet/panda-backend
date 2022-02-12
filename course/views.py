@@ -3,7 +3,7 @@ import json
 from django.http import JsonResponse, HttpResponse
 from django.views import View
 # import model
-from rest_framework import  generics
+from rest_framework import generics
 from rest_framework.parsers import JSONParser
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
@@ -24,6 +24,35 @@ class Hello(View):
         return JsonResponse({"str": hey.str, "id": hey.id}, safe=True)
 
 
+class VideoBasicInfoList(View):
+    queryset = VideoModel.objects.all()
+
+    def get(self, request):
+        queryset = VideoModel.objects.all()
+        video_list = []
+        # 序列化
+        for video in queryset:
+            video_list.append({
+                'video_title': video.video_title,
+                'video_cover': str(video.video_cover)
+            })
+
+        return JsonResponse(data=video_list, json_dumps_params={'ensure_ascii': False}, safe=False)
+
+class VideoLevelList(generics.ListAPIView):
+    serializer_class = VideoSerializer
+    def get_queryset(self):
+        if self.request.method == 'GET':
+            queryset = VideoModel.objects.all()
+            level_name = self.request.GET.get('level', None)
+            print(level_name)
+            if level_name is not None:
+                queryset = queryset.filter(video_level=level_name)
+                return queryset
+            else:
+                return JsonResponse('级别为空',  safe=False)
+
+
 class VideoList(View):
     queryset = VideoModel.objects.all()
 
@@ -35,6 +64,7 @@ class VideoList(View):
             video_list.append({
                 'video_id': video.id,
                 'video_title': video.video_title,
+                'video_level': video.video_level,
                 'video_cover': str(video.video_cover),
                 'video_url': video.video_url,
                 'video_author': video.video_author,
@@ -68,7 +98,7 @@ class VideoDetail(generics.ListAPIView):
                 queryset = queryset.filter(video_title=state_name)
                 return queryset
             else:
-                return JsonResponse('用户未登录', safe=False)
+                return JsonResponse('视频名称为空', safe=False)
 
 
 class VideoDetail2(generics.ListAPIView):
@@ -207,7 +237,7 @@ class StarList(View):
             is_login = request.session.get('is_login', None)
             if is_login:
                 q_set = VideoModel.objects.filter(user__email=u)
-                starlist=[]
+                starlist = []
                 for video in q_set:
                     starlist.append({
                         'video_id': video.id,
@@ -231,13 +261,13 @@ class StarList(View):
                 q_set = VideoModel.objects.filter(video_title=video_title)
                 for item in q_set:
                     item.user.add(user)
-                return JsonResponse('收藏成功',safe=False)
+                return JsonResponse('收藏成功', safe=False)
             else:
-                return JsonResponse('用户未登录',safe=False)
+                return JsonResponse('用户未登录', safe=False)
 
 
 class NoteSentenceList(View):
-    def get(self,request):
+    def get(self, request):
         if request.method == 'GET':
             u = request.session.get('email', None)
             is_login = request.session.get('is_login', None)
@@ -247,18 +277,18 @@ class NoteSentenceList(View):
                 for sentence in q_set:
                     notelist.append({
                         'video_id': sentence.video_id,
-                        'sentence_id':sentence.id,
+                        'sentence_id': sentence.id,
                         'sentence_content': sentence.sentence_content,
                         'sentence_English': sentence.sentence_English,
                         'sentence_pronunciation': sentence.sentence_pronunciation,
-                        'sentence_pinyin':sentence.sentence_pinyin,
+                        'sentence_pinyin': sentence.sentence_pinyin,
 
                     })
                 return JsonResponse(data=notelist, json_dumps_params={'ensure_ascii': False}, safe=False)
             else:
                 return JsonResponse('用户未登录', safe=False)
 
-    def post(self,request):
+    def post(self, request):
         if request.method == 'POST':
             sentence_id = request.GET.get('sentence_id', None)
             u = request.session.get('email', None)
@@ -267,13 +297,13 @@ class NoteSentenceList(View):
                 sentence = Sentence.objects.get(id=sentence_id)
                 user = User.objects.get(email=u)
                 sentence.user.add(user)
-                return JsonResponse('添加note成功',safe=False)
+                return JsonResponse('添加note成功', safe=False)
             else:
-                return JsonResponse('用户未登录',safe=False)
+                return JsonResponse('用户未登录', safe=False)
 
 
 class NoteWordList(View):
-    def get(self,request):
+    def get(self, request):
         if request.method == 'GET':
             u = request.session.get('email', None)
             is_login = request.session.get('is_login', None)
@@ -292,7 +322,7 @@ class NoteWordList(View):
             else:
                 return JsonResponse('用户未登录', safe=False)
 
-    def post(self,request):
+    def post(self, request):
         if request.method == 'POST':
             word_id = request.GET.get('word_id', None)
             u = request.session.get('email', None)
@@ -301,7 +331,6 @@ class NoteWordList(View):
                 word = Word.objects.get(id=word_id)
                 user = User.objects.get(email=u)
                 word.user.add(user)
-                return JsonResponse('添加note成功',safe=False)
+                return JsonResponse('添加note成功', safe=False)
             else:
-                return JsonResponse('用户未登录',safe=False)
-
+                return JsonResponse('用户未登录', safe=False)
