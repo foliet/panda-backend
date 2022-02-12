@@ -63,3 +63,7 @@ class Category(models.Model):
     category_author = models.CharField(max_length=15)
     category_total = models.IntegerField()
 
+
+class Advertisement(models.Model):
+    ad_cover = models.CharField(max_length=200, default='')
+    ad_url = models.CharField(max_length=200, default='')

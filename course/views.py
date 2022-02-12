@@ -9,10 +9,11 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 
 from course import models
-from course.models import VideoModel, Sentence, Grammar, Word
+from course.models import VideoModel, Sentence, Grammar, Word, Category, Advertisement
 
 # Create your views here.
-from course.serializers import VideoSerializer, GrammarSerializer, WordSerializer
+from course.serializers import VideoSerializer, GrammarSerializer, WordSerializer, CategorySerializer, \
+    AdvertisementSerializer
 from course.serializers import SentenceSerializer, StarSerializer
 from account_management.models import User
 
@@ -22,22 +23,6 @@ class Hello(View):
     def get(self, request):
         hey = models.HelloModel(str="hello world")
         return JsonResponse({"str": hey.str, "id": hey.id}, safe=True)
-
-
-class VideoBasicInfoList(View):
-    queryset = VideoModel.objects.all()
-
-    def get(self, request):
-        queryset = VideoModel.objects.all()
-        video_list = []
-        # 序列化
-        for video in queryset:
-            video_list.append({
-                'video_title': video.video_title,
-                'video_cover': str(video.video_cover)
-            })
-
-        return JsonResponse(data=video_list, json_dumps_params={'ensure_ascii': False}, safe=False)
 
 
 class VideoLevelList(generics.ListAPIView):
@@ -52,7 +37,7 @@ class VideoLevelList(generics.ListAPIView):
                 queryset = queryset.filter(video_level=level_name)
                 return queryset
             else:
-                return JsonResponse('级别为空',  safe=False)
+                return JsonResponse('级别为空', safe=False)
 
 
 class VideoList(View):
@@ -343,3 +328,49 @@ class NoteWordList(View):
                 return JsonResponse('用户未登录', safe=False)
 
 
+class CategoryList(generics.ListAPIView):
+    serializer_class = CategorySerializer
+
+    def get_queryset(self):
+        if self.request.method == 'GET':
+            queryset = Category.objects.all()
+            return queryset
+
+
+class AdvertisementList(generics.ListAPIView):
+    serializer_class = AdvertisementSerializer
+
+    def get_queryset(self):
+        if self.request.method == 'GET':
+            queryset = Advertisement.objects.all()
+            return queryset
+
+
+
+
+class GetLearnModel(View):
+    def get(self, request):
+        if request.method == 'GET':
+            category_set = Category.objects.all()
+            categorylist = []
+            for category in category_set:
+                categorylist.append({
+                    "category_id": category.id,
+                    "category_cover": category.category_cover,
+                    "category_title": category.category_title,
+                    "category_description": category.category_description,
+                    "category_author": category.category_author
+                })
+            advertisement_set = Advertisement.objects.all()
+            advertisementlist = []
+            for advertisement in advertisement_set:
+                advertisementlist.append({
+                    "ad_cover": advertisement.ad_cover,
+                    "ad_url": advertisement.ad_url,
+                })
+            learnModel = {
+                "category_list": categorylist,
+                "ad_info":advertisementlist[0]
+            }
+
+            return JsonResponse(data=learnModel, json_dumps_params={'ensure_ascii': False}, safe=False)
