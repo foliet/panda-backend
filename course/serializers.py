@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from course.models import VideoModel
+from course.models import VideoModel, Category
 from course.models import Sentence
 from course.models import Grammar
 from course.models import Word
@@ -10,7 +10,7 @@ from account_management.models import User
 class VideoSerializer(serializers.ModelSerializer):
     class Meta:
         model = VideoModel
-        exclude = ["user"]
+        exclude = ["user", "heat"]
 
 
 class SentenceSerializer(serializers.ModelSerializer):
@@ -41,3 +41,9 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         exclude = ["id"]
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        exclude = ["total"]
