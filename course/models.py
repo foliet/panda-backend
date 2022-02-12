@@ -24,7 +24,10 @@ class VideoModel(models.Model):
     video_cover = models.CharField(max_length=200)
     video_url = models.CharField(max_length=200)
     video_author = models.CharField(max_length=40)
+    video_reference = models.CharField(max_length=40, default='')
     submission_date = models.DateTimeField(auto_now_add=True)
+    video_description = models.CharField(max_length=200, default='')
+    video_heat = models.IntegerField(default=0)
     user = models.ManyToManyField(User)
 
 
@@ -54,9 +57,9 @@ class Word(models.Model):
 
 
 class Category(models.Model):
-    cover = models.CharField(max_length=200)
-    title = models.CharField(max_length=15)
-    description = models.CharField(max_length=200)
-    author = models.CharField(max_length=15)
-    total = models.IntegerField()
+    category_cover = models.CharField(max_length=200)
+    category_title = models.CharField(max_length=15)
+    category_description = models.CharField(max_length=200)
+    category_author = models.CharField(max_length=15)
+    category_total = models.IntegerField()
 

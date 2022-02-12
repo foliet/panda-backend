@@ -39,8 +39,10 @@ class VideoBasicInfoList(View):
 
         return JsonResponse(data=video_list, json_dumps_params={'ensure_ascii': False}, safe=False)
 
+
 class VideoLevelList(generics.ListAPIView):
     serializer_class = VideoSerializer
+
     def get_queryset(self):
         if self.request.method == 'GET':
             queryset = VideoModel.objects.all()
@@ -68,6 +70,9 @@ class VideoList(View):
                 'video_cover': str(video.video_cover),
                 'video_url': video.video_url,
                 'video_author': video.video_author,
+                'video_reference': video.video_reference,
+                'video_description': video.video_description,
+                'video_heat': video.video_heat,
                 'submission_date': video.submission_date
             })
 
@@ -245,6 +250,8 @@ class StarList(View):
                         'video_cover': str(video.video_cover),
                         'video_url': video.video_url,
                         'video_author': video.video_author,
+                        'video_reference': video.video_reference,
+                        'video_heat': video.video_heat,
                         'submission_date': video.submission_date,
                     })
                 return JsonResponse(data=starlist, json_dumps_params={'ensure_ascii': False}, safe=False)
@@ -334,3 +341,5 @@ class NoteWordList(View):
                 return JsonResponse('添加note成功', safe=False)
             else:
                 return JsonResponse('用户未登录', safe=False)
+
+
