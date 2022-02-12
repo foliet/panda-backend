@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from course.models import VideoModel, Category
+from course.models import VideoModel, Category, Advertisement
 from course.models import Sentence
 from course.models import Grammar
 from course.models import Word
@@ -46,4 +46,10 @@ class UserSerializer(serializers.ModelSerializer):
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        exclude = ["total"]
+        exclude = ["category_total"]
+
+
+class AdvertisementSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Advertisement
+        exclude = ["id"]

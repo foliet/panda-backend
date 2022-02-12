@@ -27,7 +27,6 @@ urlpatterns = [
     path('videos/', views.VideoList.as_view()),
     # 2021.7.31
     re_path('video/', views.VideoDetail.as_view()),
-    path('videos_basic_info/',views.VideoBasicInfoList.as_view()),
     path('videos_level/',views.VideoLevelList.as_view()),
     path(r'video1/<name>/', views.VideoDetail2.as_view()),
     path(r'register/', views2.register),
@@ -41,7 +40,10 @@ urlpatterns = [
     path('user_star/',views.StarList.as_view()),
     path('user_sentence_note/',views.NoteSentenceList.as_view()),
     path('user_word_note/',views.NoteWordList.as_view()),
-    path('user_info/',views2.UserList.as_view())
+    path('user_info/',views2.UserList.as_view()),
+    path('categorys/',views.CategoryList.as_view()),
+    path('advertisements/',views.AdvertisementList.as_view()),
+    path('learn/',views.GetLearnModel.as_view())
     #
     # path('test1/', views2.Test.as_view())
 ]
