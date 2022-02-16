@@ -30,6 +30,8 @@ urlpatterns = [
     path('videos_level/',views.VideoLevelList.as_view()),
     path(r'video1/<name>/', views.VideoDetail2.as_view()),
     path(r'register/', views2.register),
+    # 2022.2.15
+    path('videoplayer/',views.GetVideoDetailByID.as_view()),
 
     path('login/', views2.login, name='login'),
     path('index/', views2.index, name='index'),
