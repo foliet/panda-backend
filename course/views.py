@@ -16,13 +16,14 @@ from course.serializers import VideoSerializer, GrammarSerializer, WordSerialize
     AdvertisementSerializer
 from course.serializers import SentenceSerializer, StarSerializer
 from account_management.models import User
+from pandaBackend.Result import Result
 
 
 class Hello(View):
 
     def get(self, request):
-        hey = models.HelloModel(str="hello world")
-        return JsonResponse({"str": hey.str, "id": hey.id}, safe=True)
+        result = Result(data="hello world").toDict()
+        return JsonResponse(result, safe=False)
 
 
 class VideoLevelList(generics.ListAPIView):
@@ -89,6 +90,21 @@ class VideoDetail(generics.ListAPIView):
                 return queryset
             else:
                 return JsonResponse('视频名称为空', safe=False)
+
+
+class GetVideoDetailByID(generics.ListAPIView):
+    serializer_class = VideoSerializer
+
+    def get_queryset(self):
+        if self.request.method == 'GET':
+            queryset = VideoModel.objects.all()
+            state_name = self.request.GET.get('videoid', None)
+            print(state_name)
+            if state_name is not None:
+                queryset = queryset.filter(id=state_name)
+                return queryset
+            else:
+                return JsonResponse('视频不存在', safe=False)
 
 
 class VideoDetail2(generics.ListAPIView):
@@ -373,4 +389,4 @@ class GetLearnModel(View):
                 "ad_info":advertisementlist[0]
             }
 
-            return JsonResponse(data=learnModel, json_dumps_params={'ensure_ascii': False}, safe=False)
+            return JsonResponse(data=Result(learnModel).toDict(), json_dumps_params={'ensure_ascii': False}, safe=False)
