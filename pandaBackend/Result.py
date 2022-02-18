@@ -1,5 +1,7 @@
+
+
 class Result:
-    def __init__(self, data, status=True, code=0, message=""):
+    def __init__(self, data=None, status=True, code=0, message=""):
         self.status = status
         self.code = code
         self.message = message

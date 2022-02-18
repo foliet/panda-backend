@@ -27,10 +27,10 @@ class UserForm(forms.Form):
 
     def clean_password(self):
         value = self.cleaned_data['password']
-        if re.match('^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,20}$', value):
+        if re.match('^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z!@#$%&*_]{6,20}$', value):
             return value
         else:
-            raise forms.ValidationError(u"密码必须由6-20个字母和数字组成", code='password invalid')
+            raise forms.ValidationError(u"密码必须由6-20个字母和数字或!@#$%&*_组成", code='password invalid')
 
     def clean_repeat_password(self):
         value = self.cleaned_data['repeat_password']

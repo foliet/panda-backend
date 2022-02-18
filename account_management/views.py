@@ -30,21 +30,16 @@ class LoginForm(forms.Form):
     def clean_password(self):
         value = self.cleaned_data['password']
         #这个正则表达式不一定对
-        if re.match('^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z!@#$%&*]{6,20}$', value):
+        if re.match('^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z!@#$%&*_]{6,20}$', value):
             return value
         else:
-            raise forms.ValidationError(u"密码必须由6-20个字母和数字或!@#$%&*组成", code='password invalid')
+            raise forms.ValidationError(u"密码必须由6-20个字母和数字或!@#$%&*_组成", code='password invalid')
 
 
 def register(request):
     if request.method == 'POST':
-
-        print(request.POST)
         userform = UserForm(request.POST)
         if userform.is_valid():
-            print('print')
-            print(userform.cleaned_data)
-            print('print')
             username = userform.cleaned_data['username']
             password = userform.cleaned_data['password']
             email = userform.cleaned_data['email']
@@ -52,9 +47,9 @@ def register(request):
             user = User.objects.create(username=username, password=password, email=email, learner_level='0', points=0,
                                        country='', age=0, portrait_url='http://1.117.107.95/img/portrait.f98bd381.svg')
             user.save()
-            return HttpResponse('register success!!!')
+            return JsonResponse(data=Result(message="register success!!!").toDict())
         else:
-            return HttpResponse(userform.errors.as_json())
+            return JsonResponse(data=Result(message="格式错误,或邮箱已注册", status=False, code=103).toDict())
 
 
 def login(request):
@@ -71,11 +66,11 @@ def login(request):
                 request.session['is_login'] = True
                 return JsonResponse(data=Result(user[0].username, message="登陆成功").toDict())
             else:
-                return JsonResponse(data=Result("", message="用户名或密码错误,请重新登录", status=False, code=101).toDict())
+                return JsonResponse(data=Result(message="用户名或密码错误,请重新登录", status=False, code=101).toDict())
         else:
-            return JsonResponse(data=Result("", message=loginform.errors.get("email", "")+
-                                                        loginform.errors.get("password", ""),
-                                            status=False, code=102).toDict())
+            return JsonResponse(data=Result(message="用户名或密码错误,请重新登录", status=False, code=101).toDict())
+    if request.method == 'GET':
+        return JsonResponse(data=Result({"signup_url": "123", "retrieve_password_url": "456"}).toDict())
 
 
 def index(request):
@@ -87,8 +82,8 @@ def index(request):
 
 
 def logout(request):
-    request.session.clear()
-    return JsonResponse('登出成功', safe=False)
+    request.session.flush()
+    return JsonResponse(Result('登出成功').toDict())
 
 
 class UserList(generics.ListAPIView):
