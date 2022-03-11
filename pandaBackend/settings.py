@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'course',
     'account_management'
 
-
 ]
 
 MIDDLEWARE = [

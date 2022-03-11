@@ -362,8 +362,6 @@ class AdvertisementList(generics.ListAPIView):
             return queryset
 
 
-
-
 class GetLearnModel(View):
     def get(self, request):
         if request.method == 'GET':
@@ -386,7 +384,7 @@ class GetLearnModel(View):
                 })
             learnModel = {
                 "category_list": categorylist,
-                "ad_info":advertisementlist[0]
+                "ad_info": advertisementlist[0]
             }
 
             return JsonResponse(data=Result(learnModel).toDict(), json_dumps_params={'ensure_ascii': False}, safe=False)

@@ -5,7 +5,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -68,7 +67,8 @@ class Migration(migrations.Migration):
                 ('sentence_pronunciation', models.CharField(max_length=200)),
                 ('sentence_pinyin', models.CharField(max_length=300)),
                 ('user', models.ManyToManyField(to='account_management.User')),
-                ('video', models.ForeignKey(default=None, on_delete=django.db.models.deletion.CASCADE, to='course.videomodel')),
+                ('video',
+                 models.ForeignKey(default=None, on_delete=django.db.models.deletion.CASCADE, to='course.videomodel')),
                 ('word', models.ManyToManyField(to='course.Word')),
             ],
         ),
@@ -79,7 +79,8 @@ class Migration(migrations.Migration):
                 ('grammar_content', models.CharField(max_length=100)),
                 ('grammar_example1', models.CharField(default='', max_length=100)),
                 ('grammar_example2', models.CharField(default='', max_length=100)),
-                ('sentence', models.ForeignKey(default=None, on_delete=django.db.models.deletion.CASCADE, to='course.sentence')),
+                ('sentence',
+                 models.ForeignKey(default=None, on_delete=django.db.models.deletion.CASCADE, to='course.sentence')),
             ],
         ),
     ]
