@@ -57,12 +57,12 @@ class GetDiscoverModel(generics.GenericAPIView):
             viewpager1 = self.get_serializer(VideoModel.objects.all()[index1])
             viewpager2 = self.get_serializer(VideoModel.objects.all()[index2])
             viewpager_info = [viewpager1.data, viewpager2.data]
-            #new_videos_info返回最新十条的视频
+            # new_videos_info返回最新十条的视频
             new_videos = VideoModel.objects.order_by("submission_date")[:10]
             new_videos_info = self.get_serializer(new_videos, many=True).data
-            #popular_videos_info返回最火热的十条视频
+            # popular_videos_info返回最火热的十条视频
             popular_videos_info = self.get_serializer(VideoModel.objects.order_by("video_heat")[:10], many=True).data
-            discoverModel= {
+            discoverModel = {
                 "viewpager_info": viewpager_info,
                 "new_videos_info": new_videos_info,
                 "popular_videos_info": popular_videos_info,
@@ -73,9 +73,31 @@ class GetDiscoverModel(generics.GenericAPIView):
 class GetStartPageModel(generics.GenericAPIView):
     def get(self, request):
         if request.method == 'GET':
-            #启动页图片使用数据库中第一条广告。
+            # 启动页图片使用数据库中第一条广告。
             image_url = Advertisement.objects.first().ad_cover
-            StartPageModel = {
+            startPageModel = {
                 "image_url": image_url
             }
-            return JsonResponse(data=Result(StartPageModel).toDict())
+            return JsonResponse(data=Result(startPageModel).toDict())
+
+
+class GetVideoPlayerModel(generics.GenericAPIView):
+    def get(self, request):
+        if request.method == 'GET':
+            video_id = request.GET.get('video_id', default='-1')
+            try:
+                video = VideoModel.objects.get(id=video_id)
+            except VideoModel.DoesNotExist:
+                return JsonResponse(data=Result(message="视频不存在", status=False, code=105).toDict())
+            self.serializer_class = VideoSerializer
+            video_info = self.get_serializer(video).data
+
+            # 视频下方推荐相关视频 目前是返回所有视频中的前10个
+            video_suggestions = VideoModel.objects.all()[:10]
+            self.serializer_class = VideoBasicSerializer
+            video_suggestion_info = self.get_serializer(video_suggestions, many=True).data
+            videoPlayerModel = {
+                "video_suggestion_info": video_suggestion_info,
+                "video_info": video_info
+            }
+            return JsonResponse(data=Result(videoPlayerModel).toDict())

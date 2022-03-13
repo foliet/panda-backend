@@ -28,7 +28,7 @@ urlpatterns = [
     path('learn/', course_views.GetLearnModel.as_view()),
     path('discover/', course_views.GetDiscoverModel.as_view()),
     path('start_page/', course_views.GetStartPageModel.as_view()),
-
+    path('video_player/', course_views.GetVideoPlayerModel.as_view()),
     #
     # path('test1/', views2.Test.as_view())
 ]
