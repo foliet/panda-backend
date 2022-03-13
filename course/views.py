@@ -68,3 +68,14 @@ class GetDiscoverModel(generics.GenericAPIView):
                 "popular_videos_info": popular_videos_info,
             }
             return JsonResponse(data=Result(discoverModel).toDict())
+
+
+class GetStartPageModel(generics.GenericAPIView):
+    def get(self, request):
+        if request.method == 'GET':
+            #启动页图片使用数据库中第一条广告。
+            image_url = Advertisement.objects.first().ad_cover
+            StartPageModel = {
+                "image_url": image_url
+            }
+            return JsonResponse(data=Result(StartPageModel).toDict())
