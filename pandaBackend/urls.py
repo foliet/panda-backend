@@ -16,36 +16,17 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, re_path
 # 2021.7.23
-from course import views
-from account_management import views as views2
+from course import views as course_views
+from account_management import views as account_management_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # 2021.7.23
-    path('test/', views.Hello.as_view()),
-    # 2021.7.30
-    path('videos/', views.VideoList.as_view()),
-    # 2021.7.31
-    re_path('video/', views.VideoDetail.as_view()),
-    path('videos_level/', views.VideoLevelList.as_view()),
-    path(r'video1/<name>/', views.VideoDetail2.as_view()),
-    path(r'register/', views2.register),
-    # 2022.2.15
-    path('videoplayer/', views.GetVideoDetailByID.as_view()),
-
-    path('login/', views2.login, name='login'),
-    path('index/', views2.index, name='index'),
-    path('logout/', views2.logout, name='logout'),
-    path('course_sentence/', views.SentenceList.as_view()),
-    path('course_grammar/', views.GrammarList.as_view()),
-    path('course_word/', views.WordList.as_view()),
-    path('user_star/', views.StarList.as_view()),
-    path('user_sentence_note/', views.NoteSentenceList.as_view()),
-    path('user_word_note/', views.NoteWordList.as_view()),
-    path('user_info/', views2.UserList.as_view()),
-    path('categorys/', views.CategoryList.as_view()),
-    path('advertisements/', views.AdvertisementList.as_view()),
-    path('learn/', views.GetLearnModel.as_view())
+    path('test/', course_views.Hello.as_view()),
+    path('login/', account_management_views.login, name='login'),
+    path('index/', account_management_views.index, name='index'),
+    path('logout/', account_management_views.logout, name='logout'),
+    path('learn/', course_views.GetLearnModel.as_view()),
+    path('discover/', course_views.GetDiscoverModel.as_view())
     #
     # path('test1/', views2.Test.as_view())
 ]

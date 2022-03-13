@@ -44,12 +44,22 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    category_id = serializers.IntegerField(source='id')
+
     class Meta:
         model = Category
-        exclude = ["category_total"]
+        exclude = ["category_total", "id"]
 
 
 class AdvertisementSerializer(serializers.ModelSerializer):
     class Meta:
         model = Advertisement
         exclude = ["id"]
+
+
+class VideoBasicSerializer(serializers.ModelSerializer):
+    video_id = serializers.IntegerField(source='id')
+
+    class Meta:
+        model = VideoModel
+        fields = ["video_cover", "video_title", "video_id"]

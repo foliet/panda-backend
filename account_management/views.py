@@ -86,17 +86,17 @@ def logout(request):
     return JsonResponse(Result('登出成功').toDict())
 
 
-class UserList(generics.ListAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-    def get_queryset(self):
-        if self.request.method == 'GET':
-            # 提取浏览器中的cookie，如果不为空，表示已经登录
-            u = self.request.session.get('email', None)
-            is_login = self.request.session.get('is_login', None)
-            if is_login is not None:
-                userlist = User.objects.filter(email=u)
-                return userlist
-            else:
-                return []
+#class UserList(generics.ListAPIView):
+#    serializer_class = UserSerializer
+#
+#    def get_queryset(self):
+#        if self.request.method == 'GET':
+#            # 提取浏览器中的cookie，如果不为空，表示已经登录
+#            u = self.request.session.get('email', None)
+#            is_login = self.request.session.get('is_login', None)
+#            if is_login is not None:
+#                userlist = User.objects.filter(email=u)
+#                return userlist
+#            else:
+#                return []
+#
