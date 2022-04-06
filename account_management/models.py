@@ -16,18 +16,18 @@ class User(models.Model):
 
 
 # 邮箱验证
-#class EmailVerifyRecord(models.Model):
-#    # 验证码
-#    code = models.CharField(max_length=20)
-#    email = models.EmailField(max_length=50)
-#    # 包含注册验证和找回验证
-#    send_type = models.CharField(max_length=10, choices=(("register", "注册"), ("forget", "找回密码")))
-#    send_time = models.DateTimeField(default=datetime.now())
-#
-    #class Meta:
-    #    verbose_name = u"2. 邮箱验证码"
-    #    verbose_name_plural = verbose_name
+class EmailVerifyRecord(models.Model):
+    # 验证码
+    code = models.CharField(max_length=20)
+    email = models.EmailField(max_length=50)
+    # 包含注册验证和找回验证
+    send_type = models.CharField(max_length=10, choices=(("register", "注册"), ("forget", "找回密码")))
+    send_time = models.DateTimeField(default=datetime.now())
 
-    #def __unicode__(self):
-        #return '{0}({1})'.format(self.code, self.email)
+    class Meta:
+        verbose_name = u"2. 邮箱验证码"
+        verbose_name_plural = verbose_name
+
+    def __unicode__(self):
+        return '{0}({1})'.format(self.code, self.email)
 

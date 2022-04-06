@@ -9,7 +9,7 @@ from pandaBackend.Result import Result
 class LoginCheckMiddleware(MiddlewareMixin):
     def process_request(self, request):
         # | 分隔要匹配的多个url，从左到右匹配，有匹配就返回匹配值，否则返回None。
-        pattern = r'/index|/login|/register'
+        pattern = r'/index|/login|/register|/start_page'
 
         match = re.search(pattern, request.path)
         # 需要拦截的url

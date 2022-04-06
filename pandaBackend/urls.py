@@ -23,6 +23,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('test/', course_views.Hello.as_view()),
     path('login/', account_management_views.login, name='login'),
+    path('register1/', account_management_views.register1, name='register1'),
+    path('register2/', account_management_views.register2, name='register2'),
     path('index/', account_management_views.index, name='index'),
     path('logout/', account_management_views.logout, name='logout'),
     path('learn/', course_views.GetLearnModel.as_view()),

@@ -3,11 +3,9 @@ import re
 from django.db import models
 from django.http import HttpResponse, JsonResponse
 from django import forms
-from django.views import View
-from rest_framework import generics
-from rest_framework.utils import json
 
-from account_management.models import User
+from account_management.email_send import send_code_email
+from account_management.models import User, EmailVerifyRecord
 from account_management.forms import UserForm
 
 # Create your views here.
@@ -22,32 +20,51 @@ class LoginForm(forms.Form):
     def clean_email(self):
         value = self.cleaned_data['email']
         try:
-            result_email = User.objects.get(email=value)
+            User.objects.get(email=value)
         except User.DoesNotExist:
             raise forms.ValidationError(u"该邮箱未注册", code='email invalid')
         return value
 
     def clean_password(self):
         value = self.cleaned_data['password']
-        #这个正则表达式不一定对
+        # 这个正则表达式不一定对
         if re.match('^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z!@#$%&*_]{6,20}$', value):
             return value
         else:
             raise forms.ValidationError(u"密码必须由6-20个字母和数字或!@#$%&*_组成", code='password invalid')
 
 
-def register(request):
+def register2(request):
     if request.method == 'POST':
         userform = UserForm(request.POST)
         if userform.is_valid():
             username = userform.cleaned_data['username']
             password = userform.cleaned_data['password']
             email = userform.cleaned_data['email']
-            repeat_password = userform.cleaned_data['repeat_password']
+            code = userform.cleaned_data['code']
+            try:
+                EmailVerifyRecord.objects.get(code=code)
+                EmailVerifyRecord.objects.filter(code=code).delete()
+            except EmailVerifyRecord.DoesNotExist:
+                return JsonResponse(data=Result(message="验证码错误", status=False, code=107).toDict())
             user = User.objects.create(username=username, password=password, email=email, learner_level='0', points=0,
-                                       country='', age=0, portrait_url='http://1.117.107.95/img/portrait.f98bd381.svg')
+                                           country='', age=0, portrait_url='http://1.117.107.95/img/portrait.f98bd381.svg')
             user.save()
             return JsonResponse(data=Result(message="register success!!!").toDict())
+        else:
+            return JsonResponse(data=Result(message="格式错误,或邮箱已注册", status=False, code=103).toDict())
+
+
+def register1(request):
+    if request.method == 'POST':
+        userform = UserForm(request.POST)
+        if userform.is_valid():
+            email = userform.cleaned_data['email']
+            res_email = send_code_email(email, "register")
+            if res_email:
+                return JsonResponse(data=Result(message="验证码已经发送").toDict())
+            else:
+                return JsonResponse(data=Result(data=Result(message="验证码发送失败", status=False, code=106).toDict()))
         else:
             return JsonResponse(data=Result(message="格式错误,或邮箱已注册", status=False, code=103).toDict())
 
@@ -70,7 +87,7 @@ def login(request):
         else:
             return JsonResponse(data=Result(message="用户名或密码错误,请重新登录", status=False, code=101).toDict())
     if request.method == 'GET':
-        return JsonResponse(data=Result({"signup_url": "123", "retrieve_password_url": "456"}).toDict())
+        return JsonResponse(data=Result({"signup_url": "http://101.43.15.9/signup", "retrieve_password_url": "456"}).toDict())
 
 
 def index(request):

@@ -16,7 +16,6 @@ from pandaBackend.Result import Result
 
 
 class Hello(View):
-
     def get(self, request):
         result = Result(data="hello world").toDict()
         return JsonResponse(result, safe=False)
@@ -38,7 +37,7 @@ class GetLearnModel(generics.GenericAPIView):
 
             learnModel = {
                 "category_list": categorylist,
-                "ad_info": advertisementlist
+                "ad_info": advertisementlist[0]
             }
 
             return JsonResponse(data=Result(learnModel).toDict())
@@ -74,7 +73,8 @@ class GetStartPageModel(generics.GenericAPIView):
     def get(self, request):
         if request.method == 'GET':
             # 启动页图片使用数据库中第一条广告。
-            image_url = Advertisement.objects.first().ad_cover
+            # image_url = Advertisement.objects.first().ad_cover
+            image_url = "https://images-public-1306415420.cos.ap-shanghai.myqcloud.com/start_page_image_01.png"
             startPageModel = {
                 "image_url": image_url
             }

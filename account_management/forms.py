@@ -1,9 +1,6 @@
 # coding=utf-8
 import re
-from django.db import models
-from django.http import HttpResponse
 from django import forms
-from rest_framework.utils import json
 
 from account_management.models import User
 
@@ -16,9 +13,12 @@ class UserForm(forms.Form):
     password = forms.CharField(max_length=100)
     email = forms.EmailField(max_length=50)
     repeat_password = forms.CharField(max_length=100)
+    code = forms.CharField(max_length=20, required=False)
 
     def clean_email(self):
         value = self.cleaned_data['email']
+        if not re.match(r'^[a-z0-9][\w\.\-]*@[a-z0-9\-]+(\.[a-z]{2,5}){1,2}$', value):
+            raise forms.ValidationError(u"邮箱不符合格式", code='email invalid')
         try:
             result_email = User.objects.get(email=value)
         except User.DoesNotExist:
