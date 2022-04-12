@@ -57,6 +57,7 @@ def register2(request):
 
 def register1(request):
     if request.method == 'POST':
+        print(request.POST)
         userform = UserForm(request.POST)
         if userform.is_valid():
             email = userform.cleaned_data['email']

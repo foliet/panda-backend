@@ -36,7 +36,6 @@ def send_code_email(email, send_type="register"):
     email_record.code = code
     email_record.email = email
     email_record.send_type = send_type
-    email_record.send_time = datetime.datetime.now()
     email_record.save()
     # 初始化为空
     email_title = ""
