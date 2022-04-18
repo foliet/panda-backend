@@ -1,4 +1,5 @@
 # coding=utf-8
+import json
 import re
 from django.db import models
 from django.http import HttpResponse, JsonResponse
@@ -36,7 +37,7 @@ class LoginForm(forms.Form):
 
 def register2(request):
     if request.method == 'POST':
-        userform = UserForm(request.POST)
+        userform = UserForm(json.loads(request.body.decode())) if request.content_type == "application/json" else UserForm(request.POST)
         if userform.is_valid():
             username = userform.cleaned_data['username']
             password = userform.cleaned_data['password']
@@ -48,7 +49,7 @@ def register2(request):
             except EmailVerifyRecord.DoesNotExist:
                 return JsonResponse(data=Result(message="验证码错误", status=False, code=107).toDict())
             user = User.objects.create(username=username, password=password, email=email, learner_level='0', points=0,
-                                           country='', age=0, portrait_url='http://1.117.107.95/img/portrait.f98bd381.svg')
+                                       country='', age=0, portrait_url='http://1.117.107.95/img/portrait.f98bd381.svg')
             user.save()
             return JsonResponse(data=Result(message="register success!!!").toDict())
         else:
@@ -57,8 +58,7 @@ def register2(request):
 
 def register1(request):
     if request.method == 'POST':
-        print(request.POST)
-        userform = UserForm(request.POST)
+        userform = UserForm(json.loads(request.body.decode())) if request.content_type == "application/json" else UserForm(request.POST)
         if userform.is_valid():
             email = userform.cleaned_data['email']
             res_email = send_code_email(email, "register")
@@ -88,7 +88,8 @@ def login(request):
         else:
             return JsonResponse(data=Result(message="用户名或密码错误,请重新登录", status=False, code=101).toDict())
     if request.method == 'GET':
-        return JsonResponse(data=Result({"signup_url": "http://101.43.15.9/signup", "retrieve_password_url": "456"}).toDict())
+        return JsonResponse(
+            data=Result({"signup_url": "http://101.43.15.9/signup", "retrieve_password_url": "456"}).toDict())
 
 
 def index(request):
@@ -103,8 +104,7 @@ def logout(request):
     request.session.flush()
     return JsonResponse(Result('登出成功').toDict())
 
-
-#class UserList(generics.ListAPIView):
+# class UserList(generics.ListAPIView):
 #    serializer_class = UserSerializer
 #
 #    def get_queryset(self):
