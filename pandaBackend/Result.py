@@ -1,5 +1,3 @@
-
-
 class Result:
     def __init__(self, data=None, status=True, code=0, message=""):
         self.status = status

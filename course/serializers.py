@@ -1,10 +1,10 @@
 from rest_framework import serializers
 
-from course.models import VideoModel, Category, Advertisement
-from course.models import Sentence
-from course.models import Grammar
-from course.models import Word
 from account_management.models import User
+from course.models import Grammar
+from course.models import Sentence
+from course.models import VideoModel, Category, Advertisement
+from course.models import Word
 
 
 class VideoSerializer(serializers.ModelSerializer):

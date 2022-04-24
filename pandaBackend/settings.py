@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 from django.conf.global_settings import SESSION_COOKIE_NAME, SESSION_COOKIE_PATH
 
@@ -107,12 +108,6 @@ WSGI_APPLICATION = 'pandaBackend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',  # 默认
@@ -180,9 +175,9 @@ SESSION_SAVE_EVERY_REQUEST = False  # 是否每次请求都保存Session，默�
 # 密码   m_KjQ8RpP3Dh-aY   授权密码 YCIFOANPWUAJSIFV
 
 # 发送邮箱验证码
-EMAIL_HOST = "smtp.163.com"     # 服务器
-EMAIL_PORT = 25                 # 一般情况下都为25
-EMAIL_HOST_USER = "pandazh2022@163.com"     # 账号
-EMAIL_HOST_PASSWORD = "YCIFOANPWUAJSIFV"          # 密码 (注意：这里的密码指的是授权码)
-EMAIL_USE_TLS = False       # 一般都为False
-EMAIL_FROM = "pandazh2022@163.com"      # 邮箱来自
+EMAIL_HOST = "smtp.163.com"  # 服务器
+EMAIL_PORT = 25  # 一般情况下都为25
+EMAIL_HOST_USER = "pandazh2022@163.com"  # 账号
+EMAIL_HOST_PASSWORD = "YCIFOANPWUAJSIFV"  # 密码 (注意：这里的密码指的是授权码)
+EMAIL_USE_TLS = False  # 一般都为False
+EMAIL_FROM = "pandazh2022@163.com"  # 邮箱来自

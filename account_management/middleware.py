@@ -1,6 +1,6 @@
 import re
+
 from django.http import JsonResponse
-from django.shortcuts import HttpResponseRedirect
 from django.utils.deprecation import MiddlewareMixin
 
 from pandaBackend.Result import Result

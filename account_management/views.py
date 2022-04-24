@@ -1,16 +1,14 @@
 # coding=utf-8
 import json
 import re
-from django.db import models
-from django.http import HttpResponse, JsonResponse
+
 from django import forms
+from django.http import JsonResponse
 
 from account_management.email_send import send_code_email
-from account_management.models import User, EmailVerifyRecord
 from account_management.forms import UserForm
-
+from account_management.models import User, EmailVerifyRecord
 # Create your views here.
-from course.serializers import UserSerializer
 from pandaBackend.Result import Result
 
 
@@ -35,14 +33,15 @@ class LoginForm(forms.Form):
             raise forms.ValidationError(u"密码必须由6-20个字母和数字或!@#$%&*_组成", code='password invalid')
 
 
-def register2(request):
+def register(request):
     if request.method == 'POST':
-        userform = UserForm(json.loads(request.body.decode())) if request.content_type == "application/json" else UserForm(request.POST)
-        if userform.is_valid():
-            username = userform.cleaned_data['username']
-            password = userform.cleaned_data['password']
-            email = userform.cleaned_data['email']
-            code = userform.cleaned_data['code']
+        user_form = UserForm(
+            json.loads(request.body.decode())) if request.content_type == "application/json" else UserForm(request.POST)
+        if user_form.is_valid():
+            username = user_form.cleaned_data['username']
+            password = user_form.cleaned_data['password']
+            email = user_form.cleaned_data['email']
+            code = user_form.cleaned_data['code']
             try:
                 EmailVerifyRecord.objects.get(code=code)
                 EmailVerifyRecord.objects.filter(code=code).delete()
@@ -56,11 +55,12 @@ def register2(request):
             return JsonResponse(data=Result(message="格式错误,或邮箱已注册", status=False, code=103).toDict())
 
 
-def register1(request):
+def verify(request):
     if request.method == 'POST':
-        userform = UserForm(json.loads(request.body.decode())) if request.content_type == "application/json" else UserForm(request.POST)
-        if userform.is_valid():
-            email = userform.cleaned_data['email']
+        user_form = UserForm(
+            json.loads(request.body.decode())) if request.content_type == "application/json" else UserForm(request.POST)
+        if user_form.is_valid():
+            email = user_form.cleaned_data['email']
             res_email = send_code_email(email, "register")
             if res_email:
                 return JsonResponse(data=Result(message="验证码已经发送").toDict())
@@ -87,9 +87,6 @@ def login(request):
                 return JsonResponse(data=Result(message="用户名或密码错误,请重新登录", status=False, code=101).toDict())
         else:
             return JsonResponse(data=Result(message="用户名或密码错误,请重新登录", status=False, code=101).toDict())
-    if request.method == 'GET':
-        return JsonResponse(
-            data=Result({"signup_url": "http://101.43.15.9/signup", "retrieve_password_url": "456"}).toDict())
 
 
 def index(request):

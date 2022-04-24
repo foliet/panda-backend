@@ -1,17 +1,13 @@
-import json
+import random
 
 from django.http import JsonResponse
 from django.views import View
-import random
 from rest_framework import generics
 
-from course.models import VideoModel, Sentence, Grammar, Word, Category, Advertisement
-
+from course.models import VideoModel, Category, Advertisement
 # Create your views here.
-from course.serializers import VideoSerializer, GrammarSerializer, WordSerializer, CategorySerializer, \
+from course.serializers import VideoSerializer, CategorySerializer, \
     AdvertisementSerializer, VideoBasicSerializer
-from course.serializers import SentenceSerializer, StarSerializer
-from account_management.models import User
 from pandaBackend.Result import Result
 
 
@@ -24,7 +20,6 @@ class Hello(View):
 class GetLearnModel(generics.GenericAPIView):
     def get(self, request):
         if request.method == 'GET':
-
             self.serializer_class = CategorySerializer
             category_set = Category.objects.all()
             serializer = self.get_serializer(category_set, many=True)

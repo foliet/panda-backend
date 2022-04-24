@@ -1,6 +1,6 @@
-from account_management.models import User
-
 from django.db import models
+
+from account_management.models import User
 
 
 # Create your models here.

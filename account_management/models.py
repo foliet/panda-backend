@@ -1,7 +1,5 @@
-from django.utils.timezone import now
-
-from django.db import models
 from django.contrib.auth.models import User as User1
+from django.db import models
 
 
 class User(models.Model):
@@ -30,4 +28,3 @@ class EmailVerifyRecord(models.Model):
 
     def __unicode__(self):
         return '{0}({1})'.format(self.code, self.email)
-
