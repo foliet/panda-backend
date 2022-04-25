@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from account_management.models import User
+from authentication.models import User
 from course.models import Grammar
 from course.models import Sentence
 from course.models import VideoModel, Category, Advertisement

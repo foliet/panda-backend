@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'corsheaders',
     # 2021.7.23
     'course',
-    'account_management'
+    'authentication'
 
 ]
 
@@ -55,7 +55,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'account_management.middleware.LoginCheckMiddleware',
 ]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True
@@ -126,6 +125,9 @@ CACHES = {
         'LOCATION': 'redis://:pandapanda.@panda.rainspace.cn:6379',
     }
 }
+
+# User
+AUTH_USER_MODEL = 'authentication.User'
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators

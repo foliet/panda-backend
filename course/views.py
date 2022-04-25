@@ -11,12 +11,6 @@ from course.serializers import VideoSerializer, CategorySerializer, \
 from pandaBackend.Result import Result
 
 
-class Hello(View):
-    def get(self, request):
-        result = Result(data="hello world").toDict()
-        return JsonResponse(result, safe=False)
-
-
 class GetLearnModel(generics.GenericAPIView):
     def get(self, request):
         if request.method == 'GET':

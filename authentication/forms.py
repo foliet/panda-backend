@@ -3,7 +3,7 @@ import re
 
 from django import forms
 
-from account_management.models import User
+from authentication.models import User
 
 
 class UserForm(forms.Form):

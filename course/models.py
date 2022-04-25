@@ -1,21 +1,9 @@
 from django.db import models
 
-from account_management.models import User
+from authentication.models import User
 
 
 # Create your models here.
-
-
-class HelloModel():
-    def __init__(self, str="", id=0):
-        self.str = str
-        self.id = id
-
-    def __repr__(self):
-        return {
-            "str": self.str,
-            "id": self.id
-        }.__str__()
 
 
 class VideoModel(models.Model):
