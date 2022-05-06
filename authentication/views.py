@@ -7,7 +7,7 @@ from django.contrib.auth import login as sys_login, logout as sys_logout
 from django.core.cache import cache
 from django.http import JsonResponse
 
-from authentication.email_send import verify_email
+from authentication.email import verify_email
 from authentication.forms import UserForm
 from authentication.models import User
 # Create your views here.
@@ -37,7 +37,10 @@ class LoginForm(forms.Form):
 
 def register(request):
     if request.method == 'POST':
-        user_form = UserForm(json.loads(request.body.decode()))
+        if request.content_type == 'application/json':
+            user_form = UserForm(json.loads(request.body.decode()))
+        else:
+            user_form = UserForm(request.POST)
         if user_form.is_valid():
             username = user_form.cleaned_data['username']
             password = user_form.cleaned_data['password']
@@ -56,7 +59,10 @@ def register(request):
 
 def verify(request):
     if request.method == 'POST':
-        user_form = UserForm(json.loads(request.body.decode()))
+        if request.content_type == 'application/json':
+            user_form = UserForm(json.loads(request.body.decode()))
+        else:
+            user_form = UserForm(request.POST)
         if user_form.is_valid():
             email = user_form.cleaned_data['email']
             res_email = verify_email(email, "register")
@@ -70,10 +76,13 @@ def verify(request):
 
 def login(request):
     if request.method == 'POST':
-        loginform = LoginForm(json.loads(request.body.decode()))
-        if loginform.is_valid():
-            email = loginform.cleaned_data['email']
-            password = loginform.cleaned_data['password']
+        if request.content_type == 'application/json':
+            login_form = UserForm(json.loads(request.body.decode()))
+        else:
+            login_form = UserForm(request.POST)
+        if login_form.is_valid():
+            email = login_form.cleaned_data['email']
+            password = login_form.cleaned_data['password']
             user = User.objects.filter(email=email, password=password)
             if user is not None:
                 sys_login(request, user[0])
@@ -82,6 +91,8 @@ def login(request):
                 return JsonResponse(data=Result(message="用户名或密码错误,请重新登录", status=False, code=101).toDict())
         else:
             return JsonResponse(data=Result(message="用户名或密码错误,请重新登录", status=False, code=101).toDict())
+    if request.method == 'GET':
+        return JsonResponse(data=Result({"signup_url": "http://101.43.15.9/signup", "retrieve_password_url": "456"}).toDict())
 
 
 def index(request):
