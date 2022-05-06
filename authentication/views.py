@@ -11,7 +11,7 @@ from authentication.email import verify_email
 from authentication.forms import UserForm
 from authentication.models import User
 # Create your views here.
-from pandaBackend.Result import Result
+from pandaBackend.result import Result
 
 
 class LoginForm(forms.Form):
@@ -48,13 +48,13 @@ def register(request):
             code = user_form.cleaned_data['code']
             code2 = cache.get(email)
             if code2 is None or code != code2:
-                return JsonResponse(data=Result(message="验证码错误", status=False, code=107).toDict())
+                return JsonResponse(data=Result(message="验证码错误", status=False, code=107).to_dict())
             user = User.objects.create(username=username, password=password, email=email, learner_level='0', points=0,
                                        country='', age=0, avatar_url='http://1.117.107.95/img/portrait.f98bd381.svg')
             user.save()
-            return JsonResponse(data=Result(message="register success!!!").toDict())
+            return JsonResponse(data=Result(message="register success!!!").to_dict())
         else:
-            return JsonResponse(data=Result(message="格式错误,或邮箱已注册", status=False, code=103).toDict())
+            return JsonResponse(data=Result(message="格式错误,或邮箱已注册", status=False, code=103).to_dict())
 
 
 def verify(request):
@@ -67,11 +67,11 @@ def verify(request):
             email = user_form.cleaned_data['email']
             res_email = verify_email(email, "register")
             if res_email:
-                return JsonResponse(data=Result(message="验证码已经发送").toDict())
+                return JsonResponse(data=Result(message="验证码已经发送").to_dict())
             else:
-                return JsonResponse(data=Result(data=Result(message="验证码发送失败", status=False, code=106).toDict()))
+                return JsonResponse(data=Result(data=Result(message="验证码发送失败", status=False, code=106).to_dict()))
         else:
-            return JsonResponse(data=Result(message="格式错误,或邮箱已注册", status=False, code=103).toDict())
+            return JsonResponse(data=Result(message="格式错误,或邮箱已注册", status=False, code=103).to_dict())
 
 
 def login(request):
@@ -86,26 +86,27 @@ def login(request):
             user = User.objects.filter(email=email, password=password)
             if user is not None:
                 sys_login(request, user[0])
-                return JsonResponse(data=Result(user[0].username, message="登陆成功").toDict())
+                return JsonResponse(data=Result(user[0].username, message="登陆成功").to_dict())
             else:
-                return JsonResponse(data=Result(message="用户名或密码错误,请重新登录", status=False, code=101).toDict())
+                return JsonResponse(data=Result(message="用户名或密码错误,请重新登录", status=False, code=101).to_dict())
         else:
-            return JsonResponse(data=Result(message="用户名或密码错误,请重新登录", status=False, code=101).toDict())
+            return JsonResponse(data=Result(message="用户名或密码错误,请重新登录", status=False, code=101).to_dict())
     if request.method == 'GET':
-        return JsonResponse(data=Result({"signup_url": "http://101.43.15.9/signup", "retrieve_password_url": "456"}).toDict())
+        return JsonResponse(
+            data=Result({"signup_url": "http://101.43.15.9/signup", "retrieve_password_url": "456"}).to_dict())
 
 
 def index(request):
     if request.method == 'GET':
         # 提取浏览器中的cookie，如果不为空，表示已经登录
         user = request.user
-        return JsonResponse(Result('用户{0}的登录状态是{1}'.format(user.username, user.is_authenticated)).toDict())
+        return JsonResponse(Result('用户{0}的登录状态是{1}'.format(user.username, user.is_authenticated)).to_dict())
 
 
 def logout(request):
     if request.method == 'GET':
         sys_logout(request)
-        return JsonResponse(Result('登出成功').toDict())
+        return JsonResponse(Result('登出成功').to_dict())
 
 # class UserList(generics.ListAPIView):
 #    serializer_class = UserSerializer
@@ -116,8 +117,8 @@ def logout(request):
 #            u = self.request.session.get('email', None)
 #            is_login = self.request.session.get('is_login', None)
 #            if is_login is not None:
-#                userlist = User.objects.filter(email=u)
-#                return userlist
+#                user_list = User.objects.filter(email=u)
+#                return user_list
 #            else:
 #                return []
 #

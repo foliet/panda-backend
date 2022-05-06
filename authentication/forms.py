@@ -18,10 +18,10 @@ class UserForm(forms.Form):
 
     def clean_email(self):
         value = self.cleaned_data['email']
-        if not re.match(r'^[a-z0-9][\w\.\-]*@[a-z0-9\-]+(\.[a-z]{2,5}){1,2}$', value):
+        if not re.match(r'^[a-z0-9][\w.\-]*@[a-z0-9\-]+(\.[a-z]{2,5}){1,2}$', value):
             raise forms.ValidationError(u"邮箱不符合格式", code='email invalid')
         try:
-            result_email = User.objects.get(email=value)
+            User.objects.get(email=value)
         except User.DoesNotExist:
             return value
         raise forms.ValidationError(u"邮箱已注册", code='email invalid')
@@ -43,7 +43,7 @@ class UserForm(forms.Form):
     def clean_username(self):
         value = self.cleaned_data['username']
         try:
-            result_username = User.objects.get(username=value)
+            User.objects.get(username=value)
         except User.DoesNotExist:
             if re.match("^[A-Za-z\u4e00-\u9fa5][a-zA-Z0-9_\u4e00-\u9fa5]*$", value):
                 return value

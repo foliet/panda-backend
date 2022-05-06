@@ -1,24 +1,24 @@
 from random import Random  # 用于生成随机码
 
 from django.conf import settings  # setting.py添加的的配置信息
-from django.core.mail import send_mail  # 发送邮件模块
 from django.core.cache import cache
+from django.core.mail import send_mail  # 发送邮件模块
 
 
 # 生成随机字符串
-def random_str(randomlength=8):
+def random_str(random_length=8):
     """
     随机字符串
-    :param randomlength: 字符串长度
+    :param random_length: 字符串长度
     :return: String 类型字符串
     """
-    str = ''
+    _str = ''
     chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789'
     length = len(chars) - 1
     random = Random()
-    for i in range(randomlength):
-        str += chars[random.randint(0, length)]
-    return str
+    for i in range(random_length):
+        _str += chars[random.randint(0, length)]
+    return _str
 
 
 # 发送电子邮件

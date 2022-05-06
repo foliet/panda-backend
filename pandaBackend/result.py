@@ -5,7 +5,7 @@ class Result:
         self.message = message
         self.data = data
 
-    def toDict(self):
+    def to_dict(self):
         return {
             "status": self.status,
             "code": self.code,
