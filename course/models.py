@@ -23,7 +23,7 @@ class Sentence(models.Model):
     video = models.ForeignKey('VideoModel', default=None, on_delete=models.CASCADE)
     sentence_content = models.CharField(max_length=100)
     sentence_English = models.CharField(max_length=100)
-    sentence_pronunciation = models.CharField(max_length=200)
+    sentence_pronunciation = models.CharField(max_length=400)
     sentence_pinyin = models.CharField(max_length=300)
     word = models.ManyToManyField('Word')
     user = models.ManyToManyField(User)
@@ -40,7 +40,7 @@ class Word(models.Model):
     word_content = models.CharField(max_length=10)
     word_spelling = models.CharField(max_length=30)
     word_meaning = models.CharField(max_length=200)
-    word_spell_url = models.CharField(max_length=200)
+    word_spell_url = models.CharField(max_length=300)
     user = models.ManyToManyField(User)
 
 
