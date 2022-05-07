@@ -126,7 +126,7 @@ CACHES = {
 # User
 AUTH_USER_MODEL = 'authentication.User'
 
-AUTHENTICATION_BACKENDS = ['panda.backends.EmailModelBackend']
+AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend', 'panda.backends.EmailModelBackend']
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
