@@ -18,13 +18,11 @@ class UserForm(forms.Form):
 
     def clean_email(self):
         value = self.cleaned_data['email']
-        if not re.match(r'^[a-z0-9][\w.\-]*@[a-z0-9\-]+(\.[a-z]{2,5}){1,2}$', value):
-            raise forms.ValidationError(u"邮箱不符合格式", code='email invalid')
         try:
             User.objects.get(email=value)
         except User.DoesNotExist:
             return value
-        raise forms.ValidationError(u"邮箱已注册", code='email invalid')
+        raise forms.ValidationError(u"该邮箱已注册", code='email invalid')
 
     def clean_password(self):
         value = self.cleaned_data['password']
@@ -50,3 +48,36 @@ class UserForm(forms.Form):
             else:
                 raise forms.ValidationError("用户名只能有汉字字母数字下划线组成")
         raise forms.ValidationError('该用户名已注册')
+
+
+class LoginForm(forms.Form):
+    email = forms.EmailField(label='邮箱')
+    password = forms.CharField(label='密码', widget=forms.PasswordInput())
+
+    def clean_email(self):
+        value = self.cleaned_data['email']
+        try:
+            User.objects.get(email=value)
+        except User.DoesNotExist:
+            raise forms.ValidationError(u"该邮箱未注册", code='email invalid')
+        return value
+
+    def clean_password(self):
+        value = self.cleaned_data['password']
+        # 这个正则表达式不一定对
+        if re.match('^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z!@#$%&*_]{6,20}$', value):
+            return value
+        else:
+            raise forms.ValidationError(u"密码必须由6-20个字母和数字或!@#$%&*_组成", code='password invalid')
+
+
+class EmailForm(forms.Form):
+    email = forms.EmailField(label='邮箱')
+
+    def clean_email(self):
+        value = self.cleaned_data['email']
+        try:
+            User.objects.get(email=value)
+        except User.DoesNotExist:
+            return value
+        raise forms.ValidationError(u"该邮箱已注册", code='email invalid')

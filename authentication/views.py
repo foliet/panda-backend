@@ -1,38 +1,13 @@
-# coding=utf-8
 import json
-import re
 
-from django import forms
-from django.contrib.auth import login as sys_login, logout as sys_logout
+from django.contrib.auth import login as sys_login, logout as sys_logout, authenticate
 from django.core.cache import cache
 from django.http import JsonResponse
 
 from authentication.email import verify_email
-from authentication.forms import UserForm
+from authentication.forms import UserForm, LoginForm, EmailForm
 from authentication.models import User
-# Create your views here.
-from pandaBackend.result import Result
-
-
-class LoginForm(forms.Form):
-    email = forms.CharField(label='邮箱')
-    password = forms.CharField(label='密码', widget=forms.PasswordInput())
-
-    def clean_email(self):
-        value = self.cleaned_data['email']
-        try:
-            User.objects.get(email=value)
-        except User.DoesNotExist:
-            raise forms.ValidationError(u"该邮箱未注册", code='email invalid')
-        return value
-
-    def clean_password(self):
-        value = self.cleaned_data['password']
-        # 这个正则表达式不一定对
-        if re.match('^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z!@#$%&*_]{6,20}$', value):
-            return value
-        else:
-            raise forms.ValidationError(u"密码必须由6-20个字母和数字或!@#$%&*_组成", code='password invalid')
+from panda.result import Result
 
 
 def register(request):
@@ -49,8 +24,7 @@ def register(request):
             code2 = cache.get(email)
             if code2 is None or code != code2:
                 return JsonResponse(data=Result(message="验证码错误", status=False, code=107).to_dict())
-            user = User.objects.create(username=username, password=password, email=email, learner_level='0', points=0,
-                                       country='', age=0, avatar_url='http://1.117.107.95/img/portrait.f98bd381.svg')
+            user = User.objects.create_user(username=username, password=password, email=email)
             user.save()
             return JsonResponse(data=Result(message="register success!!!").to_dict())
         else:
@@ -60,11 +34,11 @@ def register(request):
 def verify(request):
     if request.method == 'POST':
         if request.content_type == 'application/json':
-            user_form = UserForm(json.loads(request.body.decode()))
+            email_form = EmailForm(json.loads(request.body.decode()))
         else:
-            user_form = UserForm(request.POST)
-        if user_form.is_valid():
-            email = user_form.cleaned_data['email']
+            email_form = EmailForm(request.POST)
+        if email_form.is_valid():
+            email = email_form.cleaned_data['email']
             res_email = verify_email(email, "register")
             if res_email:
                 return JsonResponse(data=Result(message="验证码已经发送").to_dict())
@@ -77,16 +51,16 @@ def verify(request):
 def login(request):
     if request.method == 'POST':
         if request.content_type == 'application/json':
-            login_form = UserForm(json.loads(request.body.decode()))
+            login_form = LoginForm(json.loads(request.body.decode()))
         else:
-            login_form = UserForm(request.POST)
+            login_form = LoginForm(request.POST)
         if login_form.is_valid():
             email = login_form.cleaned_data['email']
             password = login_form.cleaned_data['password']
-            user = User.objects.filter(email=email, password=password)
+            user = authenticate(email=email, password=password)
             if user is not None:
-                sys_login(request, user[0])
-                return JsonResponse(data=Result(user[0].username, message="登陆成功").to_dict())
+                sys_login(request, user)
+                return JsonResponse(data=Result(user.username, message="登陆成功").to_dict())
             else:
                 return JsonResponse(data=Result(message="用户名或密码错误,请重新登录", status=False, code=101).to_dict())
         else:

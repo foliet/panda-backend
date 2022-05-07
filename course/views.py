@@ -7,7 +7,7 @@ from course.models import VideoModel, Category, Advertisement
 # Create your views here.
 from course.serializers import VideoSerializer, CategorySerializer, \
     AdvertisementSerializer, VideoBasicSerializer
-from pandaBackend.result import Result
+from panda.result import Result
 
 
 class GetLearnModel(generics.GenericAPIView):

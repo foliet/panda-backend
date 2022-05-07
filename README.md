@@ -1,4 +1,4 @@
-本项目基于Python+Django+Mysql技术栈开发
+本项目基于Python+Django+Mysql+redis技术栈开发
 
 # Getting started
 
