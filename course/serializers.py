@@ -3,14 +3,14 @@ from rest_framework import serializers
 from authentication.models import User
 from course.models import Grammar
 from course.models import Sentence
-from course.models import VideoModel, Category, Advertisement
+from course.models import Video, Category, Advertisement
 from course.models import Word
 
 
 class VideoSerializer(serializers.ModelSerializer):
     class Meta:
-        model = VideoModel
-        exclude = ["user", "video_heat"]
+        model = Video
+        exclude = ["video_heat"]
 
 
 class SentenceSerializer(serializers.ModelSerializer):
@@ -33,7 +33,7 @@ class WordSerializer(serializers.ModelSerializer):
 
 class StarSerializer(serializers.ModelSerializer):
     class Meta:
-        model = VideoModel
+        model = Video
         exclude = ["id"]
 
 
@@ -61,5 +61,5 @@ class VideoBasicSerializer(serializers.ModelSerializer):
     video_id = serializers.IntegerField(source='id')
 
     class Meta:
-        model = VideoModel
+        model = Video
         fields = ["video_cover", "video_title", "video_id"]

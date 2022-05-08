@@ -1,6 +1,7 @@
 import json
 
-from django.contrib.auth import login as sys_login, logout as sys_logout, authenticate
+import django
+from django.contrib.auth import authenticate
 from django.core.cache import cache
 from django.http import JsonResponse
 
@@ -59,7 +60,7 @@ def login(request):
             password = login_form.cleaned_data['password']
             user = authenticate(email=email, password=password)
             if user is not None:
-                sys_login(request, user)
+                django.contrib.auth.login(request, user)
                 return JsonResponse(data=Result(user.username, message="登陆成功").to_dict())
             else:
                 return JsonResponse(data=Result(message="用户名或密码错误,请重新登录", status=False, code=101).to_dict())
@@ -79,7 +80,7 @@ def index(request):
 
 def logout(request):
     if request.method == 'GET':
-        sys_logout(request)
+        django.contrib.auth.logout(request)
         return JsonResponse(Result('登出成功').to_dict())
 
 # class UserList(generics.ListAPIView):

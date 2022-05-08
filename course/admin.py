@@ -1,9 +1,9 @@
 # Register your models here.
 from django.contrib import admin
 
-from .models import VideoModel, Grammar, Category, Sentence, Word, Advertisement
+from .models import Video, Grammar, Category, Sentence, Word, Advertisement
 
-admin.site.register(VideoModel)
+admin.site.register(Video)
 admin.site.register(Grammar)
 admin.site.register(Category)
 admin.site.register(Sentence)
