@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-=oj-o6xj#&0eyik_9@&($48q5shxt*!*n38k7=^u3)!dnchep9'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -113,14 +113,6 @@ DATABASES = {
         'PORT': 3306,  # mysql的端口
         'USER': 'root',  # mysql的用户名
         'PASSWORD': 'Drx123456'  # mysql的密码
-    }
-}
-
-# Cache
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-        'LOCATION': 'redis://127.0.0.1:6379',
     }
 }
 

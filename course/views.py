@@ -96,14 +96,5 @@ def video_player(request):
 
 
 def digg(request):
-    with lock:
-        while cache.setnx('redis', '') is not True:
-            time.sleep(random.randint(5, 20) * 0.1)
-        cache.expire('redis', 30)
-        play_count = cache.hget('video_id1', 'play_count')
-        if play_count is None:
-            play_count = 0
-        play_count = int(play_count) + 1
-        cache.hset('video_id1', 'play_count', play_count)
-        cache.delete('redis')
-    return JsonResponse(Result().to_dict())
+    play_count = cache.hincrby('video_id1', 'play_count', 1)
+    return JsonResponse(Result(data=play_count).to_dict())
