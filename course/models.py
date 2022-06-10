@@ -50,3 +50,4 @@ class Category(models.Model):
 class Advertisement(models.Model):
     ad_cover = models.CharField(max_length=200, default='')
     ad_url = models.CharField(max_length=200, default='')
+

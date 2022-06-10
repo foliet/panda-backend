@@ -7,5 +7,6 @@ urlpatterns = [
     path('discover', views.discover),
     path('start_page', views.start_page),
     path('video_player', views.video_player),
-    path('digg', views.digg)
+    path('digg', views.digg),
+    path('sentence', views.sentence),
 ]

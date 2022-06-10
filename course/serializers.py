@@ -16,7 +16,7 @@ class VideoSerializer(serializers.ModelSerializer):
 class SentenceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Sentence
-        exclude = ["user"]
+        exclude = ["video", "word"]
 
 
 class GrammarSerializer(serializers.ModelSerializer):

@@ -4,10 +4,10 @@ import time
 
 from django.http import JsonResponse
 
-from course.models import Video, Category, Advertisement
+from course.models import Video, Category, Advertisement, Sentence
 # Create your views here.
 from course.serializers import CategorySerializer, \
-    AdvertisementSerializer, VideoBasicSerializer, VideoSerializer
+    AdvertisementSerializer, VideoBasicSerializer, VideoSerializer, SentenceSerializer
 from panda import cache
 from panda.result import Result
 
@@ -98,3 +98,21 @@ def video_player(request):
 def digg(request):
     play_count = cache.hincrby('video_id1', 'play_count', 1)
     return JsonResponse(Result(data=play_count).to_dict())
+
+
+def sentence(request):
+    if request.method == 'GET':
+        video_id = request.GET.get('video_id')
+        if video_id is None:
+            return JsonResponse(data=Result(message="视频不存在", status=False, code=105).to_dict())
+        try:
+            video = Video.objects.get(id=video_id)
+        except Video.DoesNotExist:
+            return JsonResponse(data=Result(message="视频不存在", status=False, code=105).to_dict())
+
+        sentence_set = video.sentence_set.all()
+        sentence_list = SentenceSerializer(sentence_set, many=True).data
+        sentence_model = {
+            "sentence_list": sentence_list
+        }
+        return JsonResponse(data=Result(sentence_model).to_dict())
