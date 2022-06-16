@@ -1,14 +1,11 @@
 import random
-import threading
-import time
 
 from django.http import JsonResponse
 
-from course.models import Video, Category, Advertisement, Sentence
+from course.models import Video, Category, Advertisement
 # Create your views here.
 from course.serializers import CategorySerializer, \
     AdvertisementSerializer, VideoBasicSerializer, VideoSerializer, SentenceSerializer
-from panda import cache
 from panda.result import Result
 
 
@@ -65,23 +62,13 @@ def start_page(request):
         return JsonResponse(data=Result(start_page_model).to_dict())
 
 
-lock = threading.Lock()
-
-
 def video_player(request):
     if request.method == 'GET':
         video_id = request.GET.get('video_id', default='1')
-        with lock:
-            while cache.setnx('mysql', '') is not True:
-                time.sleep(random.randint(5, 20) * 0.1)
-            cache.expire('mysql', 30)
-            try:
-                video = Video.objects.get(id=video_id)
-            except Video.DoesNotExist:
-                return JsonResponse(data=Result(message="视频不存在", status=False, code=105).to_dict())
-            video.video_heat = video.video_heat + 1
-            video.save()
-            cache.delete('mysql')
+        try:
+            video = Video.objects.get(id=video_id)
+        except Video.DoesNotExist:
+            return JsonResponse(data=Result(message="视频不存在", status=False, code=105).to_dict())
 
         video_info = VideoSerializer(video).data
 
@@ -93,11 +80,6 @@ def video_player(request):
             "video_info": video_info
         }
         return JsonResponse(data=Result(video_player_model).to_dict())
-
-
-def digg(request):
-    play_count = cache.hincrby('video_id1', 'play_count', 1)
-    return JsonResponse(Result(data=play_count).to_dict())
 
 
 def sentence(request):
