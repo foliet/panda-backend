@@ -18,3 +18,4 @@ Starting development server at http://0.0.0.0:8000/
 $ uwsgi --ini uwsgi.ini # 请先安装uwsgi
 [uWSGI] getting INI configuration from uwsgi.ini
 ```
+![test](https://matomo.rainspace.cn/matomo.php?idsite=2&amp;rec=1)
